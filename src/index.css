@@ -1,3 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Rich Text Editor Styles */
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  font-style: italic;
+}
+
+[contenteditable]:focus:before {
+  content: none;
+}
+
+/* Rich text editor content styling */
+.rich-text-content h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.rich-text-content h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #374151;
+}
+
+.rich-text-content h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+}
+
+.rich-text-content p {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.rich-text-content ul, .rich-text-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rich-text-content li {
+  margin-bottom: 0.25rem;
+}
+
+.rich-text-content a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.rich-text-content a:hover {
+  color: #1d4ed8;
+}
+
+/* Print styles for A4 pages */
+@media print {
+  @page {
+    size: A4;
+    margin: 2cm;
+  }
+  
+  .page-break-after {
+    page-break-after: always;
+  }
+  
+  .page-break-before {
+    page-break-before: always;
+  }
+  
+  .no-break {
+    page-break-inside: avoid;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .print\\:p-6 {
+    padding: 0;
+  }
+  
+  .print\\:bg-white {
+    background: white !important;
+  }
+  
+  .print\\:hidden {
+    display: none !important;
+  }
+  
+  /* Ensure tables fit on page */
+  table {
+    page-break-inside: avoid;
+    font-size: 10pt;
+  }
+  
+  /* Prevent orphaned headers */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* Screen styles for page breaks */
+@media screen {
+  .page-break-after {
+    margin-bottom: 4rem;
+    border-bottom: 2px dashed #e5e7eb;
+    padding-bottom: 2rem;
+  }
+  
+  .page-break-before {
+    margin-top: 4rem;
+    border-top: 2px dashed #e5e7eb;
+    padding-top: 2rem;
+  }
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +136,220 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Table design themes */
+.table-design-classic {
+  background-color: #ffffff;
+}
+
+.table-design-modern {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table-design-modern thead th {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.table-design-modern td,
+.table-design-modern th {
+  border-width: 0 !important;
+}
+
+.table-design-modern tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-design-modern tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-design-minimal {
+  background-color: #ffffff;
+}
+
+.table-design-minimal td,
+.table-design-minimal th {
+  border-width: 0 !important;
+}
+
+.table-design-minimal tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-design-minimal tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-design-striped tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.table-design-striped tbody tr:hover {
+  background-color: #eff6ff;
+}
+
+.table-design-elegant {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.9));
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -25px rgba(2, 6, 23, 0.45);
+}
+
+.table-design-elegant td,
+.table-design-elegant th {
+  border-width: 0 !important;
+}
+
+.table-design-elegant tbody tr {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+}
+
+.table-design-elegant tbody tr:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px -20px rgba(15, 23, 42, 0.4);
+}
+
+.table-design-material {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 16px 40px -28px rgba(2, 132, 199, 0.6);
+}
+
+.table-design-material td,
+.table-design-material th {
+  border-width: 0 !important;
+}
+
+.table-design-material thead th {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  padding-top: 0.9rem !important;
+  padding-bottom: 0.9rem !important;
+}
+
+.table-design-material tbody tr {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.table-design-material tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-design-glass {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(244, 244, 255, 0.55));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 18px 40px -28px rgba(30, 64, 175, 0.45);
+}
+
+.table-design-glass td,
+.table-design-glass th {
+  border-width: 0 !important;
+}
+
+.table-design-glass tbody tr:hover {
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.table-design-contrast {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+.table-design-contrast td,
+.table-design-contrast th {
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+.table-design-contrast tbody tr:nth-child(even) {
+  background-color: rgba(15, 23, 42, 0.75);
+}
+
+.table-design-contrast tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.25);
+}
+
+/* Accent palettes */
+.table-accent-blue thead {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb, #4c1d95);
+  color: #ffffff;
+}
+
+.table-accent-blue tbody tr:hover {
+  background-color: rgba(37, 99, 235, 0.08);
+}
+
+.table-accent-emerald thead {
+  background: linear-gradient(135deg, #059669, #047857, #22c55e);
+  color: #ffffff;
+}
+
+.table-accent-emerald tbody tr:hover {
+  background-color: rgba(16, 185, 129, 0.08);
+}
+
+.table-accent-violet thead {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed, #db2777);
+  color: #ffffff;
+}
+
+.table-accent-violet tbody tr:hover {
+  background-color: rgba(139, 92, 246, 0.08);
+}
+
+.table-accent-amber thead {
+  background: linear-gradient(135deg, #f97316, #f59e0b, #ef4444);
+  color: #ffffff;
+}
+
+.table-accent-amber tbody tr:hover {
+  background-color: rgba(245, 158, 11, 0.12);
+}
+
+.table-accent-slate thead {
+  background: linear-gradient(135deg, #1e293b, #0f172a, #334155);
+  color: #e2e8f0;
+}
+
+.table-accent-slate tbody tr:hover {
+  background-color: rgba(30, 41, 59, 0.16);
+}
+
+.table-accent-rose thead {
+  background: linear-gradient(135deg, #f43f5e, #ec4899, #f97316);
+  color: #ffffff;
+}
+
+.table-accent-rose tbody tr:hover {
+  background-color: rgba(244, 63, 94, 0.12);
+}
+
+/* Density controls */
+.table-density-compact td,
+.table-density-compact th {
+  padding: 0.45rem 0.5rem !important;
+  font-size: 0.9rem;
+}
+
+.table-density-comfortable td,
+.table-density-comfortable th {
+  padding: 0.65rem 0.75rem !important;
+}
+
+.table-density-spacious td,
+.table-density-spacious th {
+  padding: 0.95rem 1rem !important;
+  font-size: 1.02rem;
 }

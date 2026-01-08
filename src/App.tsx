@@ -1,26 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { AppProvider, useApp } from './context/AppContext';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import AddCompanyPage from './pages/AddCompanyPage';
+import CompanyDetailPage from './pages/CompanyDetailPage';
 
-function App() {
+const AppContent: React.FC = () => {
+  const { isLoggedIn, currentView } = useApp();
+
+  if (!isLoggedIn) {
+    return <LoginPage />;
+  }
+
+  switch (currentView) {
+    case 'dashboard':
+      return <DashboardPage />;
+    case 'add-company':
+      return <AddCompanyPage />;
+    case 'company-detail':
+      return <CompanyDetailPage />;
+    default:
+      return <DashboardPage />;
+  }
+};
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
-}
+};
 
 export default App;

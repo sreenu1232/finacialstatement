@@ -1,0 +1,103 @@
+import React from 'react';
+import { Company, BreakdownItem } from '../types';
+import { buildNoteIndex } from '../utils/noteHelpers';
+import { useApp } from '../context/AppContext';
+import RichTextEditor from './RichTextEditor';
+import { getNoteTemplate } from '../utils/NoteTemplates';
+import BreakdownTable from './BreakdownTable';
+
+const Notes: React.FC<{ company: Company }> = ({ company }) => {
+  const { updateCompany, updateCompanyBS, updateCompanyPL, viewMode } = useApp();
+  const { fontStyle, fontSize, primaryColor, secondaryColor } = company.settings.template;
+  const { list: resolvedNotes } = buildNoteIndex(company);
+  const isEditable = viewMode === 'edit';
+
+  const handleNoteChange = (noteId: string, content: string) => {
+    const updatedNoteDetails = { ...company.noteDetails, [noteId]: content };
+    updateCompany(company.id, { noteDetails: updatedNoteDetails });
+  };
+
+  const handleBreakdownUpdate = (noteId: string, bsPath: string, items: BreakdownItem[], totalCurrent: number, totalPrevious: number) => {
+    // 1. Update breakdowns in company data
+    const updatedBreakdowns = { ...(company.breakdowns || {}), [noteId]: items };
+    updateCompany(company.id, { breakdowns: updatedBreakdowns });
+
+    // 2. Update Financial Statement total (BS or PL)
+    // We need to determine if the path is for BS or PL.
+    // BS paths start with: nonCurrentAssets, currentAssets, equity, nonCurrentLiabilities, currentLiabilities
+    // PL paths start with: revenueFromOperations, otherIncome, expenses, exceptionalItems, taxExpense, profitLoss...
+
+    const isBS = bsPath.startsWith('nonCurrentAssets') ||
+      bsPath.startsWith('currentAssets') ||
+      bsPath.startsWith('equity') ||
+      bsPath.startsWith('nonCurrentLiabilities') ||
+      bsPath.startsWith('currentLiabilities');
+
+    if (isBS) {
+      updateCompanyBS(company.id, `${bsPath}.current`, totalCurrent);
+      updateCompanyBS(company.id, `${bsPath}.previous`, totalPrevious);
+    } else {
+      // P&L
+      updateCompanyPL(company.id, `${bsPath}.current`, totalCurrent);
+      updateCompanyPL(company.id, `${bsPath}.previous`, totalPrevious);
+    }
+  };
+
+  return (
+    <div className="py-8 max-w-4xl mx-auto" style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
+      <h2 className="text-2xl font-bold mb-2 text-center" style={{ color: primaryColor }}>{company.name}</h2>
+      <p className="text-lg mb-6 text-center" style={{ color: secondaryColor }}>Notes to Accounts</p>
+
+      {resolvedNotes.length === 0 && (
+        <p className="mt-4 text-gray-500 text-center">No notes available.</p>
+      )}
+
+      <div className="space-y-8">
+        {resolvedNotes.map(({ number, title, originalNote, bsPath }) => {
+          const noteContent = company.noteDetails?.[originalNote] || getNoteTemplate(originalNote, title, company);
+          const breakdownItems = company.breakdowns?.[originalNote] || [];
+
+          return (
+            <div key={number} id={`note-${number}`} className="p-4 border rounded-lg bg-white shadow-sm break-inside-avoid">
+              <div className="flex items-baseline justify-between mb-4 border-b pb-2">
+                <h3 className="text-lg font-bold text-gray-800">Note {number}: {title}</h3>
+                <span className="text-xs text-gray-500">Ref: {originalNote}</span>
+              </div>
+
+              {/* Description / Text Content */}
+              <div className="mb-4">
+                {isEditable ? (
+                  <RichTextEditor
+                    value={noteContent}
+                    onChange={(content) => handleNoteChange(originalNote, content)}
+                    minHeight={150}
+                  />
+                ) : (
+                  <div
+                    className="prose max-w-none"
+                    dangerouslySetInnerHTML={{ __html: noteContent }}
+                  />
+                )}
+              </div>
+
+              {/* Breakdown Table (only if mapped to BS) */}
+              {bsPath && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-semibold text-gray-600 mb-2">Breakdown Details</h4>
+                  <BreakdownTable
+                    items={breakdownItems}
+                    onUpdate={(items, totalCurrent, totalPrevious) => handleBreakdownUpdate(originalNote, bsPath, items, totalCurrent, totalPrevious)}
+                    isEditable={isEditable}
+                    company={company}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default Notes;
