@@ -28,28 +28,56 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
             item.id === id ? { ...item, [field]: value } : item
         );
         setLocalItems(updatedItems);
+        // Only update totals when user finishes editing (on blur would be better, but for now on change)
         const { totalCurrent, totalPrevious } = calculateTotals(updatedItems);
-        onUpdate(updatedItems, totalCurrent, totalPrevious);
+        if (onUpdate) {
+            onUpdate(updatedItems, totalCurrent, totalPrevious);
+        }
+    };
+
+    const handleBlur = (id: string, field: keyof BreakdownItem, value: string | number) => {
+        // Ensure numeric values are properly parsed
+        const numericValue = field === 'description' ? value : Number(value) || 0;
+        const updatedItems = localItems.map(item =>
+            item.id === id ? { ...item, [field]: numericValue } : item
+        );
+        setLocalItems(updatedItems);
+        const { totalCurrent, totalPrevious } = calculateTotals(updatedItems);
+        if (onUpdate) {
+            onUpdate(updatedItems, totalCurrent, totalPrevious);
+        }
     };
 
     const addItem = () => {
-        const newItem: BreakdownItem = {
-            id: Date.now().toString(),
-            description: '',
-            current: 0,
-            previous: 0
-        };
-        const updatedItems = [...localItems, newItem];
-        setLocalItems(updatedItems);
-        const { totalCurrent, totalPrevious } = calculateTotals(updatedItems);
-        onUpdate(updatedItems, totalCurrent, totalPrevious);
+        try {
+            const newItem: BreakdownItem = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                description: '',
+                current: 0,
+                previous: 0
+            };
+            const updatedItems = [...localItems, newItem];
+            setLocalItems(updatedItems);
+            const { totalCurrent, totalPrevious } = calculateTotals(updatedItems);
+            if (onUpdate) {
+                onUpdate(updatedItems, totalCurrent, totalPrevious);
+            }
+        } catch (error) {
+            console.error('Error adding item:', error);
+        }
     };
 
     const removeItem = (id: string) => {
-        const updatedItems = localItems.filter(item => item.id !== id);
-        setLocalItems(updatedItems);
-        const { totalCurrent, totalPrevious } = calculateTotals(updatedItems);
-        onUpdate(updatedItems, totalCurrent, totalPrevious);
+        try {
+            const updatedItems = localItems.filter(item => item.id !== id);
+            setLocalItems(updatedItems);
+            const { totalCurrent, totalPrevious } = calculateTotals(updatedItems);
+            if (onUpdate) {
+                onUpdate(updatedItems, totalCurrent, totalPrevious);
+            }
+        } catch (error) {
+            console.error('Error removing item:', error);
+        }
     };
 
     const { totalCurrent, totalPrevious } = calculateTotals(localItems);
@@ -74,6 +102,7 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                                         type="text"
                                         value={item.description}
                                         onChange={(e) => handleChange(item.id, 'description', e.target.value)}
+                                        onBlur={(e) => handleBlur(item.id, 'description', e.target.value)}
                                         className="w-full p-1 border rounded"
                                         placeholder="Description"
                                     />
@@ -87,6 +116,7 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                                         type="number"
                                         value={item.current}
                                         onChange={(e) => handleChange(item.id, 'current', Number(e.target.value))}
+                                        onBlur={(e) => handleBlur(item.id, 'current', Number(e.target.value))}
                                         className="w-full p-1 border rounded text-right"
                                     />
                                 ) : (
@@ -99,6 +129,7 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                                         type="number"
                                         value={item.previous}
                                         onChange={(e) => handleChange(item.id, 'previous', Number(e.target.value))}
+                                        onBlur={(e) => handleBlur(item.id, 'previous', Number(e.target.value))}
                                         className="w-full p-1 border rounded text-right"
                                     />
                                 ) : (
@@ -123,12 +154,15 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                 </tbody>
             </table>
             {isEditable && (
-                <button
-                    onClick={addItem}
-                    className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                    <Plus size={16} /> Add Item
-                </button>
+                <div className="mt-4 flex justify-center">
+                    <button
+                        onClick={addItem}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md font-medium"
+                    >
+                        <Plus size={16} />
+                        Add Item
+                    </button>
+                </div>
             )}
         </div>
     );

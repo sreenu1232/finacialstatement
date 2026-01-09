@@ -53,67 +53,62 @@ const BalanceSheet: React.FC<Props> = ({ company, modeOverride }) => {
   const renderInputField = (currentValue: number, previousValue: number, path: string, note?: string) => {
     const resolvedNote = note ? noteIndex.map[note] : undefined;
 
-    // If there is a linked note, this field is read-only and driven by the note breakdown
-    if (resolvedNote) {
-      return (
-        <>
-          <td className="border p-2 text-right bg-gray-50">
-            <div className="flex items-center justify-end gap-2">
-              <span>{formatValue(currentValue)}</span>
+    // For Balance Sheet, CY is always read-only, PY is editable when no notes exist
+    return (
+      <>
+        <td className="border p-2 text-right bg-blue-50">
+          <div className="flex items-center justify-end gap-2">
+            <span className="font-medium">{formatValue(currentValue)}</span>
+            {resolvedNote && (
               <button
                 type="button"
                 onClick={() => handleNoteClick(resolvedNote)}
                 className="text-xs text-blue-600 hover:text-blue-800"
-                title="Edit in Notes"
+                title="View Note Details"
               >
-                ✎
+                📊
               </button>
-            </div>
-          </td>
-          <td className="border p-2 text-right bg-gray-50">
-            <span>{formatValue(previousValue)}</span>
-          </td>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <td className="border p-2">
-          <input
-            type="text"
-            key={`${path}-cur-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
-            defaultValue={formatValue(currentValue)}
-            onFocus={(e) => {
-              e.target.value = currentValue.toString();
-              e.target.type = 'number';
-            }}
-            onBlur={(e) => {
-              const raw = Number(e.target.value);
-              updateCompanyBS(company.id, `${path}.current`, raw);
-              e.target.type = 'text';
-              e.target.value = formatValue(raw);
-            }}
-            className="w-full px-2 py-1 border rounded text-right"
-          />
+            )}
+          </div>
         </td>
         <td className="border p-2">
-          <input
-            type="text"
-            key={`${path}-prev-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
-            defaultValue={formatValue(previousValue)}
-            onFocus={(e) => {
-              e.target.value = previousValue.toString();
-              e.target.type = 'number';
-            }}
-            onBlur={(e) => {
-              const raw = Number(e.target.value);
-              updateCompanyBS(company.id, `${path}.previous`, raw);
-              e.target.type = 'text';
-              e.target.value = formatValue(raw);
-            }}
-            className="w-full px-2 py-1 border rounded text-right"
-          />
+          {resolvedNote ? (
+            <input
+              type="text"
+              key={`${path}-prev-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
+              defaultValue={formatValue(previousValue)}
+              onFocus={(e) => {
+                e.target.value = previousValue.toString();
+                e.target.type = 'number';
+              }}
+              onBlur={(e) => {
+                const raw = Number(e.target.value);
+                updateCompanyBS(company.id, `${path}.previous`, raw);
+                e.target.type = 'text';
+                e.target.value = formatValue(raw);
+              }}
+              className="w-full px-2 py-1 border rounded text-right bg-yellow-50"
+              title="Previous Year - Manual Entry"
+            />
+          ) : (
+            <input
+              type="text"
+              key={`${path}-prev-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
+              defaultValue={formatValue(previousValue)}
+              onFocus={(e) => {
+                e.target.value = previousValue.toString();
+                e.target.type = 'number';
+              }}
+              onBlur={(e) => {
+                const raw = Number(e.target.value);
+                updateCompanyBS(company.id, `${path}.previous`, raw);
+                e.target.type = 'text';
+                e.target.value = formatValue(raw);
+              }}
+              className="w-full px-2 py-1 border rounded text-right"
+              title="Previous Year - Manual Entry"
+            />
+          )}
         </td>
       </>
     );

@@ -1,4 +1,4 @@
-import { Company, AmountWithNote } from '../types';
+import { Company } from '../types';
 
 export interface ResolvedNote {
   originalNote: string;
@@ -11,19 +11,6 @@ export interface NoteIndex {
   map: Record<string, string | undefined>;
   list: ResolvedNote[];
 }
-
-const hasAmount = (entry?: AmountWithNote) => {
-  if (!entry) return false;
-  const current = entry.current ?? 0;
-  const previous = entry.previous ?? 0;
-  return current !== 0 || previous !== 0;
-};
-
-const toDefinition = (entry: AmountWithNote | undefined, title: string) => ({
-  note: entry?.note,
-  title,
-  hasValue: hasAmount(entry),
-});
 
 export const getFinancialPath = (noteId: string): string | undefined => {
   const mapping: Record<string, string> = {
@@ -98,7 +85,32 @@ export const getFinancialPath = (noteId: string): string | undefined => {
     '66': 'earningsPerShareDiscontinued.basic',
     '67': 'earningsPerShareDiscontinued.diluted',
     '68': 'earningsPerShareTotal.basic',
-    '69': 'earningsPerShareTotal.diluted'
+    '69': 'earningsPerShareTotal.diluted',
+
+    // Cash Flow
+    '70': 'operatingActivities.profitBeforeTax',
+    '71': 'operatingActivities.adjustments.depreciationAndAmortisation',
+    '72': 'operatingActivities.adjustments.financeCosts',
+    '73': 'operatingActivities.adjustments.interestIncome',
+    '74': 'operatingActivities.adjustments.otherAdjustments',
+    '75': 'operatingActivities.changesInWorkingCapital.tradeReceivables',
+    '76': 'operatingActivities.changesInWorkingCapital.inventories',
+    '77': 'operatingActivities.changesInWorkingCapital.tradePayables',
+    '78': 'operatingActivities.changesInWorkingCapital.otherWorkingCapitalChanges',
+    '79': 'operatingActivities.incomeTaxesPaid',
+    '80': 'investingActivities.purchaseOfPropertyPlantAndEquipment',
+    '81': 'investingActivities.proceedsFromSaleOfPropertyPlantAndEquipment',
+    '82': 'investingActivities.purchaseOfInvestments',
+    '83': 'investingActivities.proceedsFromInvestments',
+    '84': 'investingActivities.otherInvestingCashFlows',
+    '85': 'financingActivities.proceedsFromShareCapital',
+    '86': 'financingActivities.proceedsFromBorrowings',
+    '87': 'financingActivities.repaymentOfBorrowings',
+    '88': 'financingActivities.dividendsPaid',
+    '89': 'financingActivities.interestPaid',
+    '90': 'financingActivities.otherFinancingCashFlows',
+    '91': 'cashAndCashEquivalentsAtBeginning',
+    '92': 'cashAndCashEquivalentsAtEnd'
   };
   return mapping[noteId];
 };
@@ -106,128 +118,125 @@ export const getFinancialPath = (noteId: string): string | undefined => {
 export const buildNoteIndex = (company: Company): NoteIndex => {
   const notes: Array<{ note?: string; title: string; hasValue: boolean }> = [];
 
-  const bs = company.balanceSheet;
-  const pl = company.profitLoss;
-  const cf = company.cashFlow;
-
+  // Always include all possible notes, regardless of whether they have amounts
   // Balance Sheet: Non-current assets
   notes.push(
-    toDefinition(bs.nonCurrentAssets.propertyPlantEquipment, '(a) Property, Plant and Equipment'),
-    toDefinition(bs.nonCurrentAssets.capitalWorkInProgress, '(b) Capital work-in-progress'),
-    toDefinition(bs.nonCurrentAssets.investmentProperty, '(c) Investment Property'),
-    toDefinition(bs.nonCurrentAssets.goodwill, '(d) Goodwill'),
-    toDefinition(bs.nonCurrentAssets.otherIntangibleAssets, '(e) Other Intangible assets'),
-    toDefinition(bs.nonCurrentAssets.intangibleAssetsUnderDevelopment, '(f) Intangible assets under development'),
-    toDefinition(bs.nonCurrentAssets.biologicalAssetsOtherThanBearerPlants, '(g) Biological Assets other than bearer plants'),
-    toDefinition(bs.nonCurrentAssets.financialAssets.investments, '(h)(i) Financial Assets - Investments'),
-    toDefinition(bs.nonCurrentAssets.financialAssets.tradeReceivables, '(h)(ii) Financial Assets - Trade receivables'),
-    toDefinition(bs.nonCurrentAssets.financialAssets.loans, '(h)(iii) Financial Assets - Loans'),
-    toDefinition(bs.nonCurrentAssets.deferredTaxAssets, '(i) Deferred tax assets (net)'),
-    toDefinition(bs.nonCurrentAssets.otherNonCurrentAssets, '(j) Other non-current assets')
+    { note: '1', title: '(a) Property, Plant and Equipment', hasValue: true },
+    { note: '2', title: '(b) Capital work-in-progress', hasValue: true },
+    { note: '3', title: '(c) Investment Property', hasValue: true },
+    { note: '4', title: '(d) Goodwill', hasValue: true },
+    { note: '5', title: '(e) Other Intangible assets', hasValue: true },
+    { note: '6', title: '(f) Intangible assets under development', hasValue: true },
+    { note: '7', title: '(g) Biological Assets other than bearer plants', hasValue: true },
+    { note: '8', title: '(h)(i) Financial Assets - Investments', hasValue: true },
+    { note: '9', title: '(h)(ii) Financial Assets - Trade receivables', hasValue: true },
+    { note: '10', title: '(h)(iii) Financial Assets - Loans', hasValue: true },
+    { note: '11', title: '(i) Deferred tax assets (net)', hasValue: true },
+    { note: '12', title: '(j) Other non-current assets', hasValue: true }
   );
 
   // Balance Sheet: Current assets
   notes.push(
-    toDefinition(bs.currentAssets.inventories, '(a) Inventories'),
-    toDefinition(bs.currentAssets.financialAssets.investments, '(b)(i) Financial Assets - Investments'),
-    toDefinition(bs.currentAssets.financialAssets.tradeReceivables, '(b)(ii) Financial Assets - Trade receivables'),
-    toDefinition(bs.currentAssets.financialAssets.cashAndCashEquivalents, '(b)(iii) Financial Assets - Cash and cash equivalents'),
-    toDefinition(bs.currentAssets.financialAssets.bankBalancesOtherThanCash, '(b)(iv) Financial Assets - Bank balances other than (iii) above'),
-    toDefinition(bs.currentAssets.financialAssets.loans, '(b)(v) Financial Assets - Loans'),
-    toDefinition(bs.currentAssets.financialAssets.others, '(b)(vi) Financial Assets - Others'),
-    toDefinition(bs.currentAssets.currentTaxAssets, '(c) Current Tax Assets (Net)'),
-    toDefinition(bs.currentAssets.otherCurrentAssets, '(d) Other current assets')
+    { note: '13', title: '(a) Inventories', hasValue: true },
+    { note: '14', title: '(b)(i) Financial Assets - Investments', hasValue: true },
+    { note: '15', title: '(b)(ii) Financial Assets - Trade receivables', hasValue: true },
+    { note: '16', title: '(b)(iii) Financial Assets - Cash and cash equivalents', hasValue: true },
+    { note: '17', title: '(b)(iv) Financial Assets - Bank balances other than (iii) above', hasValue: true },
+    { note: '18', title: '(b)(v) Financial Assets - Loans', hasValue: true },
+    { note: '19', title: '(b)(vi) Financial Assets - Others', hasValue: true },
+    { note: '20', title: '(c) Current Tax Assets (Net)', hasValue: true },
+    { note: '21', title: '(d) Other current assets', hasValue: true }
   );
 
   // Balance Sheet: Equity
   notes.push(
-    toDefinition(bs.equity.equityShareCapital, 'Equity - Equity Share capital'),
-    toDefinition(bs.equity.otherEquity, 'Equity - Other Equity')
+    { note: '22', title: 'Equity - Equity Share capital', hasValue: true },
+    { note: '23', title: 'Equity - Other Equity', hasValue: true }
   );
 
   // Balance Sheet: Non-current liabilities
   notes.push(
-    toDefinition(bs.nonCurrentLiabilities.financialLiabilities.borrowings, 'Non-current liabilities - Financial Liabilities - Borrowings'),
-    toDefinition(bs.nonCurrentLiabilities.financialLiabilities.leaseLiabilities, 'Non-current liabilities - Financial Liabilities - Lease liabilities'),
-    toDefinition(bs.nonCurrentLiabilities.financialLiabilities.tradePayables.microSmallEnterprisesDues, 'Non-current liabilities - Trade Payables (Micro & Small Enterprises)'),
-    toDefinition(bs.nonCurrentLiabilities.financialLiabilities.tradePayables.otherCreditorsDues, 'Non-current liabilities - Trade Payables (Other creditors)'),
-    toDefinition(bs.nonCurrentLiabilities.financialLiabilities.otherFinancialLiabilities, 'Non-current liabilities - Other financial liabilities'),
-    toDefinition(bs.nonCurrentLiabilities.provisions, 'Non-current liabilities - Provisions'),
-    toDefinition(bs.nonCurrentLiabilities.deferredTaxLiabilities, 'Non-current liabilities - Deferred tax liabilities (Net)'),
-    toDefinition(bs.nonCurrentLiabilities.otherNonCurrentLiabilities, 'Non-current liabilities - Other non-current liabilities')
+    { note: '24', title: 'Non-current liabilities - Financial Liabilities - Borrowings', hasValue: true },
+    { note: '25', title: 'Non-current liabilities - Financial Liabilities - Lease liabilities', hasValue: true },
+    { note: '26', title: 'Non-current liabilities - Trade Payables (Micro & Small Enterprises)', hasValue: true },
+    { note: '27', title: 'Non-current liabilities - Trade Payables (Other creditors)', hasValue: true },
+    { note: '28', title: 'Non-current liabilities - Other financial liabilities', hasValue: true },
+    { note: '29', title: 'Non-current liabilities - Provisions', hasValue: true },
+    { note: '30', title: 'Non-current liabilities - Deferred tax liabilities (Net)', hasValue: true },
+    { note: '31', title: 'Non-current liabilities - Other non-current liabilities', hasValue: true }
   );
 
   // Balance Sheet: Current liabilities
   notes.push(
-    toDefinition(bs.currentLiabilities.financialLiabilities.borrowings, 'Current liabilities - Financial Liabilities - Borrowings'),
-    toDefinition(bs.currentLiabilities.financialLiabilities.leaseLiabilities, 'Current liabilities - Financial Liabilities - Lease liabilities'),
-    toDefinition(bs.currentLiabilities.financialLiabilities.tradePayables.microSmallEnterprisesDues, 'Current liabilities - Trade Payables (Micro & Small Enterprises)'),
-    toDefinition(bs.currentLiabilities.financialLiabilities.tradePayables.otherCreditorsDues, 'Current liabilities - Trade Payables (Other creditors)'),
-    toDefinition(bs.currentLiabilities.financialLiabilities.otherFinancialLiabilities, 'Current liabilities - Other financial liabilities'),
-    toDefinition(bs.currentLiabilities.otherCurrentLiabilities, 'Current liabilities - Other current liabilities'),
-    toDefinition(bs.currentLiabilities.provisions, 'Current liabilities - Provisions'),
-    toDefinition(bs.currentLiabilities.currentTaxLiabilities, 'Current liabilities - Current Tax Liabilities (Net)')
+    { note: '32', title: 'Current liabilities - Financial Liabilities - Borrowings', hasValue: true },
+    { note: '33', title: 'Current liabilities - Financial Liabilities - Lease liabilities', hasValue: true },
+    { note: '34', title: 'Current liabilities - Trade Payables (Micro & Small Enterprises)', hasValue: true },
+    { note: '35', title: 'Current liabilities - Trade Payables (Other creditors)', hasValue: true },
+    { note: '36', title: 'Current liabilities - Other financial liabilities', hasValue: true },
+    { note: '37', title: 'Current liabilities - Other current liabilities', hasValue: true },
+    { note: '38', title: 'Current liabilities - Provisions', hasValue: true },
+    { note: '39', title: 'Current liabilities - Current Tax Liabilities (Net)', hasValue: true }
   );
 
   // Profit & Loss
   notes.push(
-    toDefinition(pl.revenueFromOperations.amount, 'Revenue from Operations'),
-    toDefinition(pl.otherIncome.amount, 'Other Income'),
-    toDefinition(pl.expenses.costOfMaterialsConsumed, 'Cost of materials consumed'),
-    toDefinition(pl.expenses.purchasesOfStockInTrade, 'Purchases of Stock-in-Trade'),
-    toDefinition(pl.expenses.changesInInventories, 'Changes in inventories of finished goods, stock-in-trade and WIP'),
-    toDefinition(pl.expenses.employeeBenefitsExpense, 'Employee benefits expense'),
-    toDefinition(pl.expenses.financeCosts, 'Finance costs'),
-    toDefinition(pl.expenses.depreciationAndAmortisation, 'Depreciation and amortisation expense'),
-    toDefinition(pl.expenses.otherExpenses, 'Other expenses'),
-    toDefinition(pl.exceptionalItems.amount, 'Exceptional Items'),
-    toDefinition(pl.taxExpense.currentTax, 'Tax Expense - Current tax'),
-    toDefinition(pl.taxExpense.deferredTax, 'Tax Expense - Deferred tax'),
-    toDefinition(pl.profitLossFromContinuingOperations, 'Profit/(Loss) for the period from continuing operations'),
-    toDefinition(pl.profitLossFromDiscontinuedOperations, 'Profit/(loss) from discontinued operations'),
-    toDefinition(pl.taxExpensesOfDiscontinuedOperations, 'Tax expenses of discontinued operations'),
-    toDefinition(pl.profitLossFromDiscontinuedOperationsAfterTax, 'Profit/(loss) from discontinued operations (after tax)'),
-    toDefinition(pl.profitLossForThePeriod, 'Profit/(loss) for the period'),
-    toDefinition(pl.otherComprehensiveIncome.itemsNotReclassified.remeasurementOfNetDefinedBenefit, 'OCI - Items not reclassified: Remeasurement of net defined benefit plans'),
-    toDefinition(pl.otherComprehensiveIncome.itemsNotReclassified.equityInstrumentsThroughOCI, 'OCI - Items not reclassified: Equity instruments through OCI'),
-    toDefinition(pl.otherComprehensiveIncome.itemsNotReclassified.incomeTaxNotReclassified, 'OCI - Items not reclassified: Income tax'),
-    toDefinition(pl.otherComprehensiveIncome.itemsReclassified.exchangeDifferences, 'OCI - Items reclassified: Exchange differences'),
-    toDefinition(pl.otherComprehensiveIncome.itemsReclassified.debtInstrumentsThroughOCI, 'OCI - Items reclassified: Debt instruments through OCI'),
-    toDefinition(pl.otherComprehensiveIncome.itemsReclassified.incomeTaxReclassified, 'OCI - Items reclassified: Income tax'),
-    toDefinition(pl.totalComprehensiveIncomeForThePeriod, 'Total Comprehensive Income for the period'),
-    toDefinition(pl.earningsPerShareContinuing.basic, 'EPS (Continuing) - Basic'),
-    toDefinition(pl.earningsPerShareContinuing.diluted, 'EPS (Continuing) - Diluted'),
-    toDefinition(pl.earningsPerShareDiscontinued.basic, 'EPS (Discontinued) - Basic'),
-    toDefinition(pl.earningsPerShareDiscontinued.diluted, 'EPS (Discontinued) - Diluted'),
-    toDefinition(pl.earningsPerShareTotal.basic, 'EPS (Total) - Basic'),
-    toDefinition(pl.earningsPerShareTotal.diluted, 'EPS (Total) - Diluted')
+    { note: '40', title: 'Revenue from Operations', hasValue: true },
+    { note: '41', title: 'Other Income', hasValue: true },
+    { note: '42', title: 'Cost of materials consumed', hasValue: true },
+    { note: '43', title: 'Purchases of Stock-in-Trade', hasValue: true },
+    { note: '44', title: 'Changes in inventories of finished goods, stock-in-trade and WIP', hasValue: true },
+    { note: '45', title: 'Employee benefits expense', hasValue: true },
+    { note: '46', title: 'Finance costs', hasValue: true },
+    { note: '47', title: 'Depreciation and amortisation expense', hasValue: true },
+    { note: '48', title: 'Other expenses', hasValue: true },
+    { note: '49', title: 'Exceptional Items', hasValue: true },
+    { note: '50', title: 'Tax Expense - Current tax', hasValue: true },
+    { note: '51', title: 'Tax Expense - Deferred tax', hasValue: true },
+    { note: '52', title: 'Profit/(Loss) for the period from continuing operations', hasValue: true },
+    { note: '53', title: 'Profit/(loss) from discontinued operations', hasValue: true },
+    { note: '54', title: 'Tax expenses of discontinued operations', hasValue: true },
+    { note: '55', title: 'Profit/(loss) from discontinued operations (after tax)', hasValue: true },
+    { note: '56', title: 'Profit/(loss) for the period', hasValue: true },
+    { note: '57', title: 'OCI - Items not reclassified: Remeasurement of net defined benefit plans', hasValue: true },
+    { note: '58', title: 'OCI - Items not reclassified: Equity instruments through OCI', hasValue: true },
+    { note: '59', title: 'OCI - Items not reclassified: Income tax', hasValue: true },
+    { note: '60', title: 'OCI - Items reclassified: Exchange differences', hasValue: true },
+    { note: '61', title: 'OCI - Items reclassified: Debt instruments through OCI', hasValue: true },
+    { note: '62', title: 'OCI - Items reclassified: Income tax', hasValue: true },
+    { note: '63', title: 'Total Comprehensive Income for the period', hasValue: true },
+    { note: '64', title: 'EPS (Continuing) - Basic', hasValue: true },
+    { note: '65', title: 'EPS (Continuing) - Diluted', hasValue: true },
+    { note: '66', title: 'EPS (Discontinued) - Basic', hasValue: true },
+    { note: '67', title: 'EPS (Discontinued) - Diluted', hasValue: true },
+    { note: '68', title: 'EPS (Total) - Basic', hasValue: true },
+    { note: '69', title: 'EPS (Total) - Diluted', hasValue: true }
   );
 
   // Cash Flow Statement
   notes.push(
-    toDefinition(cf.operatingActivities.profitBeforeTax, 'Cash Flow - Profit before tax'),
-    toDefinition(cf.operatingActivities.adjustments.depreciationAndAmortisation, 'Cash Flow - Adjustments: Depreciation and amortisation'),
-    toDefinition(cf.operatingActivities.adjustments.financeCosts, 'Cash Flow - Adjustments: Finance costs'),
-    toDefinition(cf.operatingActivities.adjustments.interestIncome, 'Cash Flow - Adjustments: Interest income'),
-    toDefinition(cf.operatingActivities.adjustments.otherAdjustments, 'Cash Flow - Adjustments: Other adjustments'),
-    toDefinition(cf.operatingActivities.changesInWorkingCapital.tradeReceivables, 'Cash Flow - Changes in working capital: Trade receivables'),
-    toDefinition(cf.operatingActivities.changesInWorkingCapital.inventories, 'Cash Flow - Changes in working capital: Inventories'),
-    toDefinition(cf.operatingActivities.changesInWorkingCapital.tradePayables, 'Cash Flow - Changes in working capital: Trade payables'),
-    toDefinition(cf.operatingActivities.changesInWorkingCapital.otherWorkingCapitalChanges, 'Cash Flow - Changes in working capital: Other assets / liabilities'),
-    toDefinition(cf.operatingActivities.incomeTaxesPaid, 'Cash Flow - Income taxes paid'),
-    toDefinition(cf.investingActivities.purchaseOfPropertyPlantAndEquipment, 'Cash Flow - Purchase of property, plant and equipment'),
-    toDefinition(cf.investingActivities.proceedsFromSaleOfPropertyPlantAndEquipment, 'Cash Flow - Proceeds from sale of property, plant and equipment'),
-    toDefinition(cf.investingActivities.purchaseOfInvestments, 'Cash Flow - Purchase of investments'),
-    toDefinition(cf.investingActivities.proceedsFromInvestments, 'Cash Flow - Proceeds from investments'),
-    toDefinition(cf.investingActivities.otherInvestingCashFlows, 'Cash Flow - Other investing cash flows'),
-    toDefinition(cf.financingActivities.proceedsFromShareCapital, 'Cash Flow - Proceeds from issue of share capital'),
-    toDefinition(cf.financingActivities.proceedsFromBorrowings, 'Cash Flow - Proceeds from borrowings'),
-    toDefinition(cf.financingActivities.repaymentOfBorrowings, 'Cash Flow - Repayment of borrowings'),
-    toDefinition(cf.financingActivities.dividendsPaid, 'Cash Flow - Dividends paid'),
-    toDefinition(cf.financingActivities.interestPaid, 'Cash Flow - Interest paid'),
-    toDefinition(cf.financingActivities.otherFinancingCashFlows, 'Cash Flow - Other financing cash flows'),
-    toDefinition(cf.cashAndCashEquivalentsAtBeginning, 'Cash Flow - Cash and cash equivalents at the beginning of the year'),
-    toDefinition(cf.cashAndCashEquivalentsAtEnd, 'Cash Flow - Cash and cash equivalents at the end of the year')
+    { note: '70', title: 'Cash Flow - Profit before tax', hasValue: true },
+    { note: '71', title: 'Cash Flow - Adjustments: Depreciation and amortisation', hasValue: true },
+    { note: '72', title: 'Cash Flow - Adjustments: Finance costs', hasValue: true },
+    { note: '73', title: 'Cash Flow - Adjustments: Interest income', hasValue: true },
+    { note: '74', title: 'Cash Flow - Adjustments: Other adjustments', hasValue: true },
+    { note: '75', title: 'Cash Flow - Changes in working capital: Trade receivables', hasValue: true },
+    { note: '76', title: 'Cash Flow - Changes in working capital: Inventories', hasValue: true },
+    { note: '77', title: 'Cash Flow - Changes in working capital: Trade payables', hasValue: true },
+    { note: '78', title: 'Cash Flow - Changes in working capital: Other assets / liabilities', hasValue: true },
+    { note: '79', title: 'Cash Flow - Income taxes paid', hasValue: true },
+    { note: '80', title: 'Cash Flow - Purchase of property, plant and equipment', hasValue: true },
+    { note: '81', title: 'Cash Flow - Proceeds from sale of property, plant and equipment', hasValue: true },
+    { note: '82', title: 'Cash Flow - Purchase of investments', hasValue: true },
+    { note: '83', title: 'Cash Flow - Proceeds from investments', hasValue: true },
+    { note: '84', title: 'Cash Flow - Other investing cash flows', hasValue: true },
+    { note: '85', title: 'Cash Flow - Proceeds from issue of share capital', hasValue: true },
+    { note: '86', title: 'Cash Flow - Proceeds from borrowings', hasValue: true },
+    { note: '87', title: 'Cash Flow - Repayment of borrowings', hasValue: true },
+    { note: '88', title: 'Cash Flow - Dividends paid', hasValue: true },
+    { note: '89', title: 'Cash Flow - Interest paid', hasValue: true },
+    { note: '90', title: 'Cash Flow - Other financing cash flows', hasValue: true },
+    { note: '91', title: 'Cash Flow - Cash and cash equivalents at the beginning of the year', hasValue: true },
+    { note: '92', title: 'Cash Flow - Cash and cash equivalents at the end of the year', hasValue: true }
   );
 
   // Static Notes
@@ -242,18 +251,15 @@ export const buildNoteIndex = (company: Company): NoteIndex => {
 
   notes.forEach((item) => {
     if (!item.note) return;
-    if (item.hasValue) {
-      const number = String(counter++);
-      map[item.note] = number;
-      resolved.push({
-        originalNote: item.note,
-        number,
-        title: item.title,
-        bsPath: getFinancialPath(item.note)
-      });
-    } else {
-      map[item.note] = undefined;
-    }
+    // Always include notes now, regardless of hasValue
+    const number = String(counter++);
+    map[item.note] = number;
+    resolved.push({
+      originalNote: item.note,
+      number,
+      title: item.title,
+      bsPath: getFinancialPath(item.note)
+    });
   });
 
   return { map, list: resolved };

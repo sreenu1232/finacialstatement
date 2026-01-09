@@ -7,7 +7,7 @@ import { getNoteTemplate } from '../utils/NoteTemplates';
 import BreakdownTable from './BreakdownTable';
 
 const Notes: React.FC<{ company: Company }> = ({ company }) => {
-  const { updateCompany, updateCompanyBS, updateCompanyPL, viewMode } = useApp();
+  const { updateCompany, viewMode } = useApp();
   const { fontStyle, fontSize, primaryColor, secondaryColor } = company.settings.template;
   const { list: resolvedNotes } = buildNoteIndex(company);
   const isEditable = viewMode === 'edit';
@@ -18,29 +18,37 @@ const Notes: React.FC<{ company: Company }> = ({ company }) => {
   };
 
   const handleBreakdownUpdate = (noteId: string, bsPath: string, items: BreakdownItem[], totalCurrent: number, totalPrevious: number) => {
-    // 1. Update breakdowns in company data
-    const updatedBreakdowns = { ...(company.breakdowns || {}), [noteId]: items };
-    updateCompany(company.id, { breakdowns: updatedBreakdowns });
+    // Update both breakdowns and financial statement totals in one operation
+    const updatedCompany = { ...company };
+
+    // 1. Update breakdowns
+    updatedCompany.breakdowns = { ...(updatedCompany.breakdowns || {}), [noteId]: items };
 
     // 2. Update Financial Statement total (BS or PL)
-    // We need to determine if the path is for BS or PL.
-    // BS paths start with: nonCurrentAssets, currentAssets, equity, nonCurrentLiabilities, currentLiabilities
-    // PL paths start with: revenueFromOperations, otherIncome, expenses, exceptionalItems, taxExpense, profitLoss...
+    if (bsPath) {
+      const keys = bsPath.split('.');
+      let obj: any = bsPath.startsWith('nonCurrentAssets') ||
+        bsPath.startsWith('currentAssets') ||
+        bsPath.startsWith('equity') ||
+        bsPath.startsWith('nonCurrentLiabilities') ||
+        bsPath.startsWith('currentLiabilities') ? updatedCompany.balanceSheet : updatedCompany.profitLoss;
 
-    const isBS = bsPath.startsWith('nonCurrentAssets') ||
-      bsPath.startsWith('currentAssets') ||
-      bsPath.startsWith('equity') ||
-      bsPath.startsWith('nonCurrentLiabilities') ||
-      bsPath.startsWith('currentLiabilities');
+      // Navigate to the correct nested object
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!obj[keys[i]]) {
+          obj[keys[i]] = {};
+        }
+        obj = obj[keys[i]];
+      }
 
-    if (isBS) {
-      updateCompanyBS(company.id, `${bsPath}.current`, totalCurrent);
-      updateCompanyBS(company.id, `${bsPath}.previous`, totalPrevious);
-    } else {
-      // P&L
-      updateCompanyPL(company.id, `${bsPath}.current`, totalCurrent);
-      updateCompanyPL(company.id, `${bsPath}.previous`, totalPrevious);
+      // Update the final property
+      const finalKey = keys[keys.length - 1];
+      if (obj[finalKey]) {
+        obj[finalKey] = { ...obj[finalKey], current: totalCurrent, previous: totalPrevious };
+      }
     }
+
+    updateCompany(company.id, updatedCompany);
   };
 
   return (

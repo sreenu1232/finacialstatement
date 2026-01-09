@@ -117,24 +117,37 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
               {/* Logo Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
-                <div className="flex items-center gap-3">
+                <div className="space-y-3">
                   {company.settings.template.logo && (
-                    <img 
-                      src={company.settings.template.logo} 
-                      alt="Company Logo" 
-                      className="w-16 h-16 object-contain border border-gray-300 rounded"
-                    />
+                    <div className="flex flex-col items-center space-y-2">
+                      <img
+                        src={company.settings.template.logo}
+                        alt="Company Logo"
+                        className="w-20 h-20 object-contain border-2 border-gray-200 rounded-lg bg-gray-50"
+                      />
+                    </div>
                   )}
-                  <label className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700">
-                    <Upload size={16} />
-                    Upload Logo
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleLogoUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  <div className="flex gap-2">
+                    <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors">
+                      <Upload size={16} />
+                      {company.settings.template.logo ? 'Change Logo' : 'Upload Logo'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                    {company.settings.template.logo && (
+                      <button
+                        onClick={() => updateTemplateSettings({ logo: undefined })}
+                        className="flex items-center justify-center gap-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        <Trash2 size={16} />
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 

@@ -12,7 +12,7 @@ interface Props {
 }
 
 const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
-  const { viewMode, updateCompanyCF, updateCompany } = useApp();
+  const { viewMode, updateCompanyCF, updateCompany, setActiveTab } = useApp();
   const effectiveViewMode = modeOverride ?? viewMode;
   const isEditable = effectiveViewMode === 'edit';
   const totals = calculateCFTotal(company.cashFlow);
@@ -35,48 +35,106 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
     );
   };
 
-  const renderInputField = (currentValue: number, previousValue: number, path: string) => (
-    <>
-      <td className="border p-2">
-        <input
-          type="text"
-          key={`${path}-cur-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
-          defaultValue={formatValue(currentValue)}
-          onFocus={(e) => {
-            e.target.value = currentValue.toString();
-            e.target.type = 'number';
-          }}
-          onBlur={(e) => {
-            const raw = e.target.value === '' ? 0 : Number(e.target.value);
-            const safeValue = Number.isFinite(raw) ? raw : 0;
-            updateCompanyCF(company.id, `${path}.current`, safeValue);
-            e.target.type = 'text';
-            e.target.value = formatValue(safeValue);
-          }}
-          className="w-full px-2 py-1 border rounded text-right"
-        />
-      </td>
-      <td className="border p-2">
-        <input
-          type="text"
-          key={`${path}-prev-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
-          defaultValue={formatValue(previousValue)}
-          onFocus={(e) => {
-            e.target.value = previousValue.toString();
-            e.target.type = 'number';
-          }}
-          onBlur={(e) => {
-            const raw = e.target.value === '' ? 0 : Number(e.target.value);
-            const safeValue = Number.isFinite(raw) ? raw : 0;
-            updateCompanyCF(company.id, `${path}.previous`, safeValue);
-            e.target.type = 'text';
-            e.target.value = formatValue(safeValue);
-          }}
-          className="w-full px-2 py-1 border rounded text-right"
-        />
-      </td>
-    </>
-  );
+  const handleNoteClick = (noteNumber: string) => {
+    setActiveTab('notes');
+    setTimeout(() => {
+      const el = document.getElementById(`note-${noteNumber}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
+  };
+
+  const renderInputField = (currentValue: number, previousValue: number, path: string, note?: string) => {
+    const resolvedNote = note ? noteIndex.map[note] : undefined;
+
+    // If there is a linked note, CY is calculated from notes, PY is manually editable
+    if (resolvedNote) {
+      return (
+        <>
+          <td className="border p-2 text-right bg-blue-50">
+            <div className="flex items-center justify-end gap-2">
+              <span className="font-medium">{formatValue(currentValue)}</span>
+              <button
+                type="button"
+                onClick={() => handleNoteClick(resolvedNote)}
+                className="text-xs text-blue-600 hover:text-blue-800"
+                title="View Note Details"
+              >
+                📊
+              </button>
+            </div>
+          </td>
+          <td className="border p-2">
+            <input
+              type="text"
+              key={`${path}-prev-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
+              defaultValue={formatValue(previousValue)}
+              onFocus={(e) => {
+                e.target.value = previousValue.toString();
+                e.target.type = 'number';
+              }}
+              onBlur={(e) => {
+                const raw = e.target.value === '' ? 0 : Number(e.target.value);
+                const safeValue = Number.isFinite(raw) ? raw : 0;
+                updateCompanyCF(company.id, `${path}.previous`, safeValue);
+                e.target.type = 'text';
+                e.target.value = formatValue(safeValue);
+              }}
+              className="w-full px-2 py-1 border rounded text-right bg-yellow-50"
+              title="Previous Year - Manual Entry"
+            />
+          </td>
+        </>
+      );
+    }
+
+    // No linked note - both PY and CY are manually editable
+    return (
+      <>
+        <td className="border p-2">
+          <input
+            type="text"
+            key={`${path}-cur-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
+            defaultValue={formatValue(currentValue)}
+            onFocus={(e) => {
+              e.target.value = currentValue.toString();
+              e.target.type = 'number';
+            }}
+            onBlur={(e) => {
+              const raw = e.target.value === '' ? 0 : Number(e.target.value);
+              const safeValue = Number.isFinite(raw) ? raw : 0;
+              updateCompanyCF(company.id, `${path}.current`, safeValue);
+              e.target.type = 'text';
+              e.target.value = formatValue(safeValue);
+            }}
+            className="w-full px-2 py-1 border rounded text-right"
+            title="Current Year - Manual Entry"
+          />
+        </td>
+        <td className="border p-2">
+          <input
+            type="text"
+            key={`${path}-prev-${unitOfMeasurement}-${decimalPoints}-${numberStyle}-${customNumberGrouping || ''}`}
+            defaultValue={formatValue(previousValue)}
+            onFocus={(e) => {
+              e.target.value = previousValue.toString();
+              e.target.type = 'number';
+            }}
+            onBlur={(e) => {
+              const raw = e.target.value === '' ? 0 : Number(e.target.value);
+              const safeValue = Number.isFinite(raw) ? raw : 0;
+              updateCompanyCF(company.id, `${path}.previous`, safeValue);
+              e.target.type = 'text';
+              e.target.value = formatValue(safeValue);
+            }}
+            className="w-full px-2 py-1 border rounded text-right"
+            title="Previous Year - Manual Entry"
+          />
+        </td>
+      </>
+    );
+  };
 
   const renderDisplayField = (currentValue: number, previousValue: number) => (
     <>
