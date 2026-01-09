@@ -1,46 +1,93 @@
-# Getting Started with Create React App
+# Financial Statement Maker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive React TypeScript application for creating and managing financial statements including Balance Sheets, Profit & Loss statements, Cash Flow statements, and detailed notes with breakdown tables.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Company Management**: Add and manage multiple companies
+- **Financial Statements**:
+  - Balance Sheet with automatic calculations
+  - Profit & Loss statement
+  - Cash Flow statement
+- **Editable Notes System**: Create detailed notes with breakdown tables for financial statement items
+- **Real-time Synchronization**: Changes in breakdown tables automatically update financial statement totals
+- **Responsive Design**: Built with Tailwind CSS for modern, responsive UI
+- **Rich Text Editor**: Edit note content with formatting capabilities
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS
+- **Build Tool**: Create React App with CRACO
+- **State Management**: React Context API
+- **UI Components**: Custom components with Tailwind styling
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/sreenu1232/finacialstatement.git
+cd finacialstatement
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm start
+```
+
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Build for Production
 
-### `npm test`
+```bash
+npm run build
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Usage
 
-### `npm run build`
+1. **Dashboard**: View all companies and their financial summaries
+2. **Add Company**: Create new companies with initial financial data
+3. **Company Details**: Edit financial statements and notes
+4. **Notes**: Add detailed breakdowns for financial statement items
+5. **Export**: Generate comprehensive financial reports
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+src/
+├── components/          # Reusable UI components
+│   ├── BalanceSheet.tsx
+│   ├── ProfitLoss.tsx
+│   ├── CashFlow.tsx
+│   ├── Notes.tsx
+│   └── BreakdownTable.tsx
+├── pages/              # Page components
+├── context/            # React Context for state management
+├── data/               # Sample data and types
+├── types/              # TypeScript type definitions
+└── utils/              # Utility functions
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Contributing
 
-### `npm run eject`
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## License
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is licensed under the MIT License.
