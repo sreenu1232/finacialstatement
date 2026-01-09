@@ -120,7 +120,7 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                                         className="w-full p-1 border rounded text-right"
                                     />
                                 ) : (
-                                    formatINR(item.current)
+                                    formatINR(item.current, 'full-number')
                                 )}
                             </td>
                             <td className="border p-2 text-right">
@@ -133,7 +133,7 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                                         className="w-full p-1 border rounded text-right"
                                     />
                                 ) : (
-                                    formatINR(item.previous)
+                                    formatINR(item.previous, 'full-number')
                                 )}
                             </td>
                             {isEditable && (
@@ -147,8 +147,8 @@ const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEdit
                     ))}
                     <tr className="font-bold bg-gray-50">
                         <td className="border p-2">Total</td>
-                        <td className="border p-2 text-right">{formatINR(totalCurrent)}</td>
-                        <td className="border p-2 text-right">{formatINR(totalPrevious)}</td>
+                        <td className="border p-2 text-right">{formatINR(totalCurrent, 'full-number')}</td>
+                        <td className="border p-2 text-right">{formatINR(totalPrevious, 'full-number')}</td>
                         {isEditable && <td className="border p-2"></td>}
                     </tr>
                 </tbody>
