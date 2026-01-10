@@ -1,6 +1,6 @@
 import React from 'react';
 import { Company, BreakdownItem } from '../types';
-import { buildNoteIndex } from '../utils/noteHelpers';
+import { buildNoteIndex, getFinancialPath } from '../utils/noteHelpers';
 import { useApp } from '../context/AppContext';
 import RichTextEditor from './RichTextEditor';
 import { getNoteTemplate } from '../utils/NoteTemplates';
@@ -11,6 +11,37 @@ const Notes: React.FC<{ company: Company }> = ({ company }) => {
   const { fontStyle, fontSize, primaryColor, secondaryColor } = company.settings.template;
   const { list: resolvedNotes } = buildNoteIndex(company);
   const isEditable = viewMode === 'edit';
+
+  const getDefaultBreakdownItems = (noteId: string): BreakdownItem[] => {
+    // Get the financial value for this note
+    const bsPath = getFinancialPath(noteId);
+    if (!bsPath) return [];
+
+    const keys = bsPath.split('.');
+    let obj: any = bsPath.startsWith('nonCurrentAssets') ||
+      bsPath.startsWith('currentAssets') ||
+      bsPath.startsWith('equity') ||
+      bsPath.startsWith('nonCurrentLiabilities') ||
+      bsPath.startsWith('currentLiabilities') ? company.balanceSheet : company.profitLoss;
+
+    // Navigate to the correct nested object
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!obj[keys[i]]) return [];
+      obj = obj[keys[i]];
+    }
+
+    const finalKey = keys[keys.length - 1];
+    const value = obj[finalKey];
+    if (!value || typeof value.current !== 'number' || typeof value.previous !== 'number') return [];
+
+    // Create a default breakdown item with the financial statement value
+    return [{
+      id: `default-${noteId}`,
+      description: 'Total',
+      current: value.current,
+      previous: value.previous
+    }];
+  };
 
   const handleNoteChange = (noteId: string, content: string) => {
     const updatedNoteDetails = { ...company.noteDetails, [noteId]: content };
@@ -61,9 +92,10 @@ const Notes: React.FC<{ company: Company }> = ({ company }) => {
       )}
 
       <div className="space-y-8">
-        {resolvedNotes.map(({ number, title, originalNote, bsPath }) => {
-          const noteContent = company.noteDetails?.[originalNote] || getNoteTemplate(originalNote, title, company);
-          const breakdownItems = company.breakdowns?.[originalNote] || [];
+        {resolvedNotes.map((note: { number: string; title: string; originalNote: string; bsPath?: string }) => {
+          const { number, title, originalNote, bsPath } = note;
+          const noteContent = company.noteDetails?.[originalNote]?.trim() || getNoteTemplate(originalNote, title, company);
+          const breakdownItems = company.breakdowns?.[originalNote] || getDefaultBreakdownItems(originalNote);
 
           return (
             <div key={number} id={`note-${number}`} className="p-4 border rounded-lg bg-white shadow-sm break-inside-avoid">

@@ -23,7 +23,7 @@ export const getNoteTemplate = (noteId: string, title: string, company: Company)
     const rightAlign = `text-align: right;`;
 
     // Helper to format number
-    const fmt = (val: number) => formatINR(val);
+    const fmt = (val: number) => formatINR(val, 'full-number');
 
     // 1. Corporate Information
     if (noteId === 'corporate-info') {
