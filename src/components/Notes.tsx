@@ -2,15 +2,16 @@ import React from 'react';
 import { Company, BreakdownItem } from '../types';
 import { buildNoteIndex, getFinancialPath } from '../utils/noteHelpers';
 import { useApp } from '../context/AppContext';
-import RichTextEditor from './RichTextEditor';
 import { getNoteTemplate } from '../utils/NoteTemplates';
 import BreakdownTable from './BreakdownTable';
+import RichTextEditor from './RichTextEditor';
 
-const Notes: React.FC<{ company: Company }> = ({ company }) => {
+const Notes: React.FC<{ company: Company; modeOverride?: 'edit' | 'view' | 'report' }> = ({ company, modeOverride }) => {
   const { updateCompany, viewMode } = useApp();
   const { fontStyle, fontSize, primaryColor, secondaryColor } = company.settings.template;
   const { list: resolvedNotes } = buildNoteIndex(company);
-  const isEditable = viewMode === 'edit';
+  const effectiveViewMode = modeOverride || viewMode;
+  const isEditable = effectiveViewMode === 'edit';
 
   const getDefaultBreakdownItems = (noteId: string): BreakdownItem[] => {
     // Get the financial value for this note
@@ -83,26 +84,23 @@ const Notes: React.FC<{ company: Company }> = ({ company }) => {
   };
 
   return (
-    <div className="py-8 max-w-4xl mx-auto" style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
-      <h2 className="text-2xl font-bold mb-2 text-center" style={{ color: primaryColor }}>{company.name}</h2>
-      <p className="text-lg mb-6 text-center" style={{ color: secondaryColor }}>Notes to Accounts</p>
+    <div className="py-8 max-w-4xl mx-auto print:py-4" style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
+      <h2 className="text-2xl mb-2 text-center notes-title print:text-center print:mb-6" style={{ color: primaryColor }}>{company.name}</h2>
+      <p className="text-lg mb-6 text-center print:text-center print:mb-6" style={{ color: secondaryColor }}>Notes to Accounts</p>
 
       {resolvedNotes.length === 0 && (
         <p className="mt-4 text-gray-500 text-center">No notes available.</p>
       )}
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {resolvedNotes.map((note: { number: string; title: string; originalNote: string; bsPath?: string }) => {
           const { number, title, originalNote, bsPath } = note;
           const noteContent = company.noteDetails?.[originalNote]?.trim() || getNoteTemplate(originalNote, title, company);
           const breakdownItems = company.breakdowns?.[originalNote] || getDefaultBreakdownItems(originalNote);
 
           return (
-            <div key={number} id={`note-${number}`} className="p-4 border rounded-lg bg-white shadow-sm break-inside-avoid">
-              <div className="flex items-baseline justify-between mb-4 border-b pb-2">
-                <h3 className="text-lg font-bold text-gray-800">Note {number}: {title}</h3>
-                <span className="text-xs text-gray-500">Ref: {originalNote}</span>
-              </div>
+            <div key={number} id={`note-${number}`} className="break-inside-avoid">
+              <h3 className="text-lg text-gray-800 mb-3 border-b border-gray-300 pb-2">Note {number}: {title}</h3>
 
               {/* Description / Text Content */}
               <div className="mb-4">
@@ -110,11 +108,12 @@ const Notes: React.FC<{ company: Company }> = ({ company }) => {
                   <RichTextEditor
                     value={noteContent}
                     onChange={(content) => handleNoteChange(originalNote, content)}
+                    placeholder="Enter note content..."
                     minHeight={150}
                   />
                 ) : (
                   <div
-                    className="prose max-w-none"
+                    className="prose max-w-none text-sm leading-relaxed whitespace-pre-wrap"
                     dangerouslySetInnerHTML={{ __html: noteContent }}
                   />
                 )}
@@ -123,7 +122,6 @@ const Notes: React.FC<{ company: Company }> = ({ company }) => {
               {/* Breakdown Table (only if mapped to BS) */}
               {bsPath && (
                 <div className="mt-4">
-                  <h4 className="text-sm font-semibold text-gray-600 mb-2">Breakdown Details</h4>
                   <BreakdownTable
                     items={breakdownItems}
                     onUpdate={(items, totalCurrent, totalPrevious) => handleBreakdownUpdate(originalNote, bsPath, items, totalCurrent, totalPrevious)}

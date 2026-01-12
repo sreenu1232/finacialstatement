@@ -17,7 +17,7 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
   const isEditable = effectiveViewMode === 'edit';
   const totals = calculateCFTotal(company.cashFlow);
   const noteIndex = buildNoteIndex(company);
-  const { unitOfMeasurement, decimalPoints, numberStyle, customNumberGrouping, tableDesign, tableAccent, tableDensity } = company.settings.formatting;
+  const { unitOfMeasurement, decimalPoints, numberStyle, customNumberGrouping, tableDesign, tableAccent, tableDensity, showSignatureBlocks, signatureBlocks } = company.settings.formatting;
   const { fontStyle, fontSize, primaryColor, secondaryColor } = company.settings.template;
 
   const formatValue = (value: number) =>
@@ -25,6 +25,32 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
   const unitLabel = getUnitLabel(unitOfMeasurement);
 
   const { tableClassName, theadClassName } = getTableDesignClasses(tableDesign, tableAccent, tableDensity);
+
+  const renderSignatureBlocks = () => {
+    if (!showSignatureBlocks || signatureBlocks.length === 0) return null;
+
+    return (
+      <div className="mt-8 pt-6 border-t border-gray-300">
+        <div className="flex justify-center gap-12">
+          {signatureBlocks.map((signature) => (
+            <div key={signature.id} className="text-center min-w-[120px]">
+              <div className="mb-6">
+                <div className="h-16 border-b border-gray-400 mb-3"></div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-tight">{signature.title}</p>
+                  <p className="text-sm leading-tight">{signature.name}</p>
+                  <p className="text-xs text-gray-600 leading-tight">{signature.designation}</p>
+                  {signature.showDSC && (
+                    <p className="text-xs text-blue-600 mt-2 leading-tight">DSC Applied</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const renderNoteCell = (note?: string) => {
     const resolved = note ? noteIndex.map[note] : undefined;
@@ -162,10 +188,10 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
   return (
     <div style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
-      <h3 className="text-lg font-bold mb-2" style={{ color: primaryColor }}>
+      <h3 className="text-lg font-bold mb-2 cash-flow-title print:text-center print:mb-6" style={{ color: primaryColor }}>
         Cash Flow Statement
       </h3>
-      <p className="text-sm mb-4" style={{ color: secondaryColor }}>
+      <p className="text-sm mb-4 print:text-center print:mb-6" style={{ color: secondaryColor }}>
         For the year ended {company.yearEnd}
       </p>
 
@@ -491,6 +517,7 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
           </tbody>
         </table>
       </div>
+      {renderSignatureBlocks()}
     </div>
   );
 };

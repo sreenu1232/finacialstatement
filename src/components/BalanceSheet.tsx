@@ -171,7 +171,7 @@ const BalanceSheet: React.FC<Props> = ({ company, modeOverride }) => {
 
   return (
     <div style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
-      <h3 className="text-lg font-bold mb-4" style={{ color: primaryColor }}>{tableTitle}</h3>
+      <h3 className="text-lg font-bold mb-4 balance-sheet-title print:text-center print:mb-6" style={{ color: primaryColor }}>{tableTitle}</h3>
       <div className="overflow-x-auto">
         <table className={tableClassName} style={{ fontSize: `${fontSize}px` }}>
           <thead className={theadClassName}>

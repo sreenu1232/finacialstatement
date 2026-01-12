@@ -148,8 +148,8 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
 
   return (
     <div style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
-      <h3 className="text-lg font-bold mb-2" style={{ color: primaryColor }}>Profit & Loss Statement</h3>
-      <p className="text-sm mb-4" style={{ color: secondaryColor }}>For the year ended {company.yearEnd}</p>
+      <h3 className="text-lg font-bold mb-2 profit-loss-title print:text-center print:mb-6" style={{ color: primaryColor }}>Profit & Loss Statement</h3>
+      <p className="text-sm mb-4 print:text-center print:mb-6" style={{ color: secondaryColor }}>For the year ended {company.yearEnd}</p>
       <div className="overflow-x-auto">
         <table className={tableClassName} style={{ fontSize: `${fontSize}px` }}>
           <thead className={theadClassName}>
