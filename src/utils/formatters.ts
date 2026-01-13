@@ -272,9 +272,17 @@ export function calculatePLTotal(pl: ProfitLossData) {
     pl.otherComprehensiveIncome.itemsReclassified.debtInstrumentsThroughOCI.previous +
     pl.otherComprehensiveIncome.itemsReclassified.incomeTaxReclassified.previous;
   
+  // XII. Profit/(loss) from Discontinued operations (after tax) (X-XI)
+  const profitLossFromDiscontinuedOperationsAfterTax = pl.profitLossFromDiscontinuedOperations.current - pl.taxExpensesOfDiscontinuedOperations.current;
+  const profitLossFromDiscontinuedOperationsAfterTaxPrev = pl.profitLossFromDiscontinuedOperations.previous - pl.taxExpensesOfDiscontinuedOperations.previous;
+  
+  // XIII. Profit/(loss) for the period (IX+XII)
+  const profitLossForThePeriod = profitForThePeriod + profitLossFromDiscontinuedOperationsAfterTax;
+  const profitLossForThePeriodPrev = profitForThePeriodPrev + profitLossFromDiscontinuedOperationsAfterTaxPrev;
+  
   // XV. Total Comprehensive Income for the period (XIII+XIV)
-  const totalComprehensiveIncome = profitForThePeriod + otherComprehensiveIncome;
-  const totalComprehensiveIncomePrev = profitForThePeriodPrev + otherComprehensiveIncomePrev;
+  const totalComprehensiveIncome = profitLossForThePeriod + otherComprehensiveIncome;
+  const totalComprehensiveIncomePrev = profitLossForThePeriodPrev + otherComprehensiveIncomePrev;
   
   return {
     totalIncome,
@@ -287,6 +295,10 @@ export function calculatePLTotal(pl: ProfitLossData) {
     profitBeforeTaxPrev,
     profitForThePeriod,
     profitForThePeriodPrev,
+    profitLossFromDiscontinuedOperationsAfterTax,
+    profitLossFromDiscontinuedOperationsAfterTaxPrev,
+    profitLossForThePeriod,
+    profitLossForThePeriodPrev,
     otherComprehensiveIncome,
     otherComprehensiveIncomePrev,
     totalComprehensiveIncome,

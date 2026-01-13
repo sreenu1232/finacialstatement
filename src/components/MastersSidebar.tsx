@@ -90,45 +90,47 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
   };
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 h-full overflow-y-auto">
-      <div className="p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-          <Settings size={20} />
+    <div className="w-80 bg-white/95 backdrop-blur-sm border-r border-gray-200/50 h-full overflow-y-auto shadow-lg">
+      <div className="p-5 border-b border-gray-200/50 bg-gradient-to-r from-gray-50/50 to-white sticky top-0 z-10">
+        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2.5 tracking-tight">
+          <div className="p-2 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg">
+            <Settings size={18} className="text-white" />
+          </div>
           Masters
         </h2>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-3">
         {/* 1. Choose from different templates */}
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('templates')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <Palette size={16} />
-              <span className="font-medium">Template Settings</span>
+            <div className="flex items-center gap-2.5">
+              <Palette size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Template Settings</span>
             </div>
-            {expandedSections.templates ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.templates ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.templates && (
-            <div className="ml-4 space-y-3 p-3 bg-gray-50 rounded-lg">
+            <div className="ml-4 space-y-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
               {/* Logo Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Company Logo</label>
                 <div className="space-y-3">
                   {company.settings.template.logo && (
                     <div className="flex flex-col items-center space-y-2">
                       <img
                         src={company.settings.template.logo}
                         alt="Company Logo"
-                        className="w-20 h-20 object-contain border-2 border-gray-200 rounded-lg bg-gray-50"
+                        className="w-20 h-20 object-contain border-2 border-gray-200 rounded-xl bg-gray-50 shadow-sm"
                       />
                     </div>
                   )}
                   <div className="flex gap-2">
-                    <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors">
+                    <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl cursor-pointer hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium text-sm">
                       <Upload size={16} />
                       {company.settings.template.logo ? 'Change Logo' : 'Upload Logo'}
                       <input
@@ -141,7 +143,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                     {company.settings.template.logo && (
                       <button
                         onClick={() => updateTemplateSettings({ logo: undefined })}
-                        className="flex items-center justify-center gap-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        className="flex items-center justify-center gap-2 px-3 py-2.5 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-300 shadow-md hover:shadow-lg"
                       >
                         <Trash2 size={16} />
                         Remove
@@ -153,33 +155,33 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
 
               {/* Primary Color */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Primary Color</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Primary Color</label>
                 <input
                   type="color"
                   value={company.settings.template.primaryColor}
                   onChange={(e) => updateTemplateSettings({ primaryColor: e.target.value })}
-                  className="w-full h-10 border border-gray-300 rounded-lg"
+                  className="w-full h-12 border-2 border-gray-200 rounded-xl hover:border-gray-300 transition-all duration-300 cursor-pointer"
                 />
               </div>
 
               {/* Secondary Color */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Secondary Color</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Secondary Color</label>
                 <input
                   type="color"
                   value={company.settings.template.secondaryColor}
                   onChange={(e) => updateTemplateSettings({ secondaryColor: e.target.value })}
-                  className="w-full h-10 border border-gray-300 rounded-lg"
+                  className="w-full h-12 border-2 border-gray-200 rounded-xl hover:border-gray-300 transition-all duration-300 cursor-pointer"
                 />
               </div>
 
               {/* Font Style */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Font Style</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Font Style</label>
                 <select
                   value={company.settings.template.fontStyle}
                   onChange={(e) => updateTemplateSettings({ fontStyle: e.target.value as FontStyle })}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900"
                 >
                   <option value="arial">Arial</option>
                   <option value="times-new-roman">Times New Roman</option>
@@ -191,24 +193,24 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
 
               {/* Font Size */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Font Size (px)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Font Size (px)</label>
                 <input
                   type="number"
                   min="8"
                   max="24"
                   value={company.settings.template.fontSize}
                   onChange={(e) => updateTemplateSettings({ fontSize: parseInt(e.target.value) })}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900"
                 />
               </div>
 
               {/* Paper Size */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Paper Size</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Paper Size</label>
                 <select
                   value={company.settings.template.paperSize}
                   onChange={(e) => updateTemplateSettings({ paperSize: e.target.value as PaperSize })}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900"
                 >
                   <option value="A4">A4</option>
                   <option value="single-continuous">Single Continuous</option>
@@ -222,17 +224,17 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('notes')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <FileText size={16} />
-              <span className="font-medium">Note Format Customization</span>
+            <div className="flex items-center gap-2.5">
+              <FileText size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Note Format Customization</span>
             </div>
-            {expandedSections.notes ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.notes ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.notes && (
-            <div className="ml-4 p-3 bg-gray-50 rounded-lg">
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
               <p className="text-sm text-gray-600 mb-3">Customize table formats for:</p>
               <div className="space-y-2">
                 <label className="flex items-center gap-2">
@@ -260,36 +262,36 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('signatures')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <PenTool size={16} />
-              <span className="font-medium">Signature Blocks</span>
+            <div className="flex items-center gap-2.5">
+              <PenTool size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Signature Blocks</span>
             </div>
-            {expandedSections.signatures ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.signatures ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.signatures && (
-            <div className="ml-4 space-y-3 p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Enable Signature Blocks</span>
+            <div className="ml-4 space-y-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
+              <div className="flex items-center justify-between mb-4 p-3 bg-white rounded-xl border border-gray-200">
+                <span className="text-sm font-semibold text-gray-800 tracking-wide">Enable Signature Blocks</span>
                 <input
                   type="checkbox"
                   checked={company.settings.formatting.showSignatureBlocks}
                   onChange={(e) => updateFormattingSettings({ showSignatureBlocks: e.target.checked })}
-                  className="rounded"
+                  className="rounded w-5 h-5 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
                 />
               </div>
 
               {company.settings.formatting.showSignatureBlocks && (
                 <div className="space-y-3">
                   {company.settings.formatting.signatureBlocks.map((signature) => (
-                    <div key={signature.id} className="p-3 border border-gray-300 rounded-lg space-y-2">
+                    <div key={signature.id} className="p-4 border-2 border-gray-200 rounded-xl space-y-3 bg-white shadow-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Signature Block</span>
+                        <span className="text-sm font-semibold text-gray-800 tracking-wide">Signature Block</span>
                         <button
                           onClick={() => removeSignatureBlock(signature.id)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-all duration-300 border border-transparent hover:border-red-200"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -300,7 +302,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                         placeholder="Title (e.g., Director, MD, CFO)"
                         value={signature.title}
                         onChange={(e) => updateSignatureBlock(signature.id, { title: e.target.value })}
-                        className="w-full p-2 text-sm border border-gray-300 rounded"
+                        className="w-full px-3 py-2 text-sm border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900 placeholder-gray-400"
                       />
                       
                       <input
@@ -308,7 +310,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                         placeholder="Name"
                         value={signature.name}
                         onChange={(e) => updateSignatureBlock(signature.id, { name: e.target.value })}
-                        className="w-full p-2 text-sm border border-gray-300 rounded"
+                        className="w-full px-3 py-2 text-sm border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900 placeholder-gray-400"
                       />
                       
                       <input
@@ -316,7 +318,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                         placeholder="Designation"
                         value={signature.designation}
                         onChange={(e) => updateSignatureBlock(signature.id, { designation: e.target.value })}
-                        className="w-full p-2 text-sm border border-gray-300 rounded"
+                        className="w-full px-3 py-2 text-sm border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900 placeholder-gray-400"
                       />
                       
                       <label className="flex items-center gap-2">
@@ -333,7 +335,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                   
                   <button
                     onClick={addSignatureBlock}
-                    className="w-full flex items-center justify-center gap-2 p-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-gray-400 hover:text-gray-800"
+                    className="w-full flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50/50 transition-all duration-300 font-medium"
                   >
                     <Plus size={16} />
                     Add Signature Block
@@ -348,34 +350,34 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('dsc')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <PenTool size={16} />
-              <span className="font-medium">DSC Sign</span>
+            <div className="flex items-center gap-2.5">
+              <PenTool size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">DSC Sign</span>
             </div>
-            {expandedSections.dsc ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.dsc ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.dsc && (
-            <div className="ml-4 p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium">Enable DSC Sign</span>
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
+              <div className="flex items-center justify-between mb-4 p-3 bg-white rounded-xl border border-gray-200">
+                <span className="text-sm font-semibold text-gray-800 tracking-wide">Enable DSC Sign</span>
                 <input
                   type="checkbox"
                   checked={company.settings.formatting.showDSCSign}
                   onChange={(e) => updateFormattingSettings({ showDSCSign: e.target.checked })}
-                  className="rounded"
+                  className="rounded w-5 h-5 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
                 />
               </div>
               
               {company.settings.formatting.showDSCSign && (
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">DSC Certificate</label>
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-700 tracking-wide">DSC Certificate</label>
                   <input
                     type="file"
                     accept=".p12,.pfx"
-                    className="w-full p-2 text-sm border border-gray-300 rounded"
+                    className="w-full px-3 py-2.5 text-sm border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                   <p className="text-xs text-gray-500">Upload DSC certificate file (.p12 or .pfx)</p>
                 </div>
@@ -388,22 +390,22 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('decimals')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <Hash size={16} />
-              <span className="font-medium">Decimal Points</span>
+            <div className="flex items-center gap-2.5">
+              <Hash size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Decimal Points</span>
             </div>
-            {expandedSections.decimals ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.decimals ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.decimals && (
-            <div className="ml-4 p-3 bg-gray-50 rounded-lg">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Number of Decimal Places</label>
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
+              <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Number of Decimal Places</label>
               <select
                 value={company.settings.formatting.decimalPoints}
                 onChange={(e) => updateFormattingSettings({ decimalPoints: parseInt(e.target.value) })}
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900"
               >
                 <option value={0}>0 (e.g., 5)</option>
                 <option value={1}>1 (e.g., 5.0)</option>
@@ -418,22 +420,22 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('units')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <Ruler size={16} />
-              <span className="font-medium">Unit of Measurement</span>
+            <div className="flex items-center gap-2.5">
+              <Ruler size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Unit of Measurement</span>
             </div>
-            {expandedSections.units ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.units ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.units && (
-            <div className="ml-4 p-3 bg-gray-50 rounded-lg">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Display Units</label>
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
+              <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Display Units</label>
               <select
                 value={company.settings.formatting.unitOfMeasurement}
                 onChange={(e) => updateFormattingSettings({ unitOfMeasurement: e.target.value as UnitOfMeasurement })}
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900"
               >
                 <option value="full-number">Full Number</option>
                 <option value="thousands">Thousands</option>
@@ -451,22 +453,22 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('numberStyle')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <Hash size={16} />
-              <span className="font-medium">Number Style</span>
+            <div className="flex items-center gap-2.5">
+              <Hash size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Number Style</span>
             </div>
-            {expandedSections.numberStyle ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.numberStyle ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.numberStyle && (
-            <div className="ml-4 p-3 bg-gray-50 rounded-lg space-y-3">
-              <label className="block text-sm font-medium text-gray-700">Choose number style</label>
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm space-y-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-2.5 tracking-wide">Choose number style</label>
               <select
                 value={company.settings.formatting.numberStyle}
                 onChange={(e) => updateFormattingSettings({ numberStyle: e.target.value as any })}
-                className="w-full p-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900"
               >
                 <option value="indian">Indian (12,34,56,789)</option>
                 <option value="international">International (123,456,789)</option>
@@ -481,7 +483,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                     type="text"
                     value={company.settings.formatting.customNumberGrouping || ''}
                     onChange={(e) => updateFormattingSettings({ customNumberGrouping: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none bg-white text-gray-900 placeholder-gray-400"
                     placeholder="e.g., 3,2 (first group 3, then 2 repeating)"
                   />
                   <p className="text-xs text-gray-500 mt-1">Examples: "3" → 123,456,789 | "3,2" → 12,34,56,789</p>
@@ -495,17 +497,17 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('tableDesign')}
-            className="w-full flex items-center justify-between p-3 text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-gray-50 to-gray-50/80 rounded-xl hover:from-gray-100 hover:to-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow"
           >
-            <div className="flex items-center gap-2">
-              <PenTool size={16} />
-              <span className="font-medium">Table Design</span>
+            <div className="flex items-center gap-2.5">
+              <PenTool size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Table Design</span>
             </div>
-            {expandedSections.tableDesign ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            {expandedSections.tableDesign ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
           </button>
 
           {expandedSections.tableDesign && (
-            <div className="ml-4 p-3 bg-gray-50 rounded-lg space-y-4">
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Choose a table style</label>
                 <div className="space-y-2">

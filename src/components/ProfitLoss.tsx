@@ -422,22 +422,12 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
               <td className="border p-2 text-right">{formatValue(company.profitLoss.taxExpense.deferredTax.previous)}</td>
             </tr>
 
-            {/* IX. Profit (Loss) for the period from continuing operations (VII - VIII) */}
+            {/* IX. Profit (Loss) for the period from continuing operations (VII - VIII) - Auto calculated */}
             <tr className={`font-bold ${accentStrongRowClass}`}>
               <td className="border p-2">IX. Profit (Loss) for the period from continuing operations (VII - VIII)</td>
               {renderNoteTd(company.profitLoss.profitLossFromContinuingOperations.note)}
-              {isEditable ?
-                renderInputField(
-                  company.profitLoss.profitLossFromContinuingOperations.current,
-                  company.profitLoss.profitLossFromContinuingOperations.previous,
-                  'profitLossFromContinuingOperations',
-                  company.profitLoss.profitLossFromContinuingOperations.note
-                ) :
-                renderDisplayField(
-                  company.profitLoss.profitLossFromContinuingOperations.current,
-                  company.profitLoss.profitLossFromContinuingOperations.previous
-                )
-              }
+              <td className="border p-2 text-right">{formatValue(totals.profitForThePeriod)}</td>
+              <td className="border p-2 text-right">{formatValue(totals.profitForThePeriodPrev)}</td>
             </tr>
 
             {/* X. Profit/(loss) from discontinued operations */}
@@ -476,40 +466,20 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
               }
             </tr>
 
-            {/* XII. Profit/(loss) from Discontinued operations (after tax) (X-XI) */}
+            {/* XII. Profit/(loss) from Discontinued operations (after tax) (X-XI) - Auto calculated */}
             <tr className={`font-bold ${accentStrongRowClass}`}>
               <td className="border p-2">XII. Profit/(loss) from Discontinued operations (after tax) (X-XI)</td>
               {renderNoteTd(company.profitLoss.profitLossFromDiscontinuedOperationsAfterTax.note)}
-              {isEditable ?
-                renderInputField(
-                  company.profitLoss.profitLossFromDiscontinuedOperationsAfterTax.current,
-                  company.profitLoss.profitLossFromDiscontinuedOperationsAfterTax.previous,
-                  'profitLossFromDiscontinuedOperationsAfterTax',
-                  company.profitLoss.profitLossFromDiscontinuedOperationsAfterTax.note
-                ) :
-                renderDisplayField(
-                  company.profitLoss.profitLossFromDiscontinuedOperationsAfterTax.current,
-                  company.profitLoss.profitLossFromDiscontinuedOperationsAfterTax.previous
-                )
-              }
+              <td className="border p-2 text-right">{formatValue(totals.profitLossFromDiscontinuedOperationsAfterTax)}</td>
+              <td className="border p-2 text-right">{formatValue(totals.profitLossFromDiscontinuedOperationsAfterTaxPrev)}</td>
             </tr>
 
-            {/* XIII. Profit/(loss) for the period (IX+XII) */}
+            {/* XIII. Profit/(loss) for the period (IX+XII) - Auto calculated */}
             <tr className={`font-bold ${accentStrongRowClass}`}>
               <td className="border p-2">XIII. Profit/(loss) for the period (IX+XII)</td>
               {renderNoteTd(company.profitLoss.profitLossForThePeriod.note)}
-              {isEditable ?
-                renderInputField(
-                  company.profitLoss.profitLossForThePeriod.current,
-                  company.profitLoss.profitLossForThePeriod.previous,
-                  'profitLossForThePeriod',
-                  company.profitLoss.profitLossForThePeriod.note
-                ) :
-                renderDisplayField(
-                  company.profitLoss.profitLossForThePeriod.current,
-                  company.profitLoss.profitLossForThePeriod.previous
-                )
-              }
+              <td className="border p-2 text-right">{formatValue(totals.profitLossForThePeriod)}</td>
+              <td className="border p-2 text-right">{formatValue(totals.profitLossForThePeriodPrev)}</td>
             </tr>
 
             {/* XIV. Other Comprehensive Income */}

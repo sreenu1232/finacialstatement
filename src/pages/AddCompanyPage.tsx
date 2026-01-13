@@ -225,60 +225,60 @@ const AddCompanyPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/50">
+      <div className="bg-white/90 backdrop-blur-md shadow-md border-b border-gray-100/50 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center gap-4">
           <button 
             onClick={() => setCurrentView('dashboard')} 
-            className="p-3 hover:bg-gray-100 rounded-xl transition-colors duration-200"
+            className="p-3 hover:bg-gray-100 rounded-xl transition-all duration-300 border border-transparent hover:border-gray-200"
           >
             <ArrowLeft size={20} className="text-gray-600" />
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Add New Company</h1>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Add New Company</h1>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto p-8">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-white/20">
+        <div className="bg-white/98 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-gray-100/50">
           <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl ring-4 ring-blue-500/20">
               <span className="text-2xl">🏢</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Create Company Profile</h2>
-            <p className="text-gray-600">Fill in the details to set up a new company for financial statement generation</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">Create Company Profile</h2>
+            <p className="text-gray-600 text-sm">Fill in the details to set up a new company for financial statement generation</p>
           </div>
 
           <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">Company Name *</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Company Name *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 bg-white hover:border-gray-300"
                   placeholder="Enter company name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">CIN Number *</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">CIN Number *</label>
                 <input
                   type="text"
                   value={formData.cin}
                   onChange={(e) => setFormData({ ...formData, cin: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400 font-mono"
+                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-mono bg-white hover:border-gray-300"
                   placeholder="U12345MH2020PLC123456"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">Address *</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Address *</label>
               <textarea
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400 resize-none"
+                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 resize-none bg-white hover:border-gray-300"
                 placeholder="Enter complete company address"
                 rows={4}
               />
@@ -286,11 +286,11 @@ const AddCompanyPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">Sector *</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Sector *</label>
                 <select
                   value={formData.sector}
                   onChange={(e) => setFormData({ ...formData, sector: e.target.value as 'Primary' | 'Secondary' | 'Tertiary' | 'Quaternary' })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 bg-white"
+                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 bg-white hover:border-gray-300"
                 >
                   <option value="Primary">Primary</option>
                   <option value="Secondary">Secondary</option>
@@ -300,34 +300,34 @@ const AddCompanyPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">PAN Number</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">PAN Number</label>
                 <input
                   type="text"
                   value={formData.pan}
                   onChange={(e) => setFormData({ ...formData, pan: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400 font-mono"
+                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 font-mono bg-white hover:border-gray-300"
                   placeholder="AAAAA1234A"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">Specifications *</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Specifications *</label>
               <input
                 type="text"
                 value={formData.specifications}
                 onChange={(e) => setFormData({ ...formData, specifications: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 placeholder-gray-400 bg-white hover:border-gray-300"
                 placeholder="e.g., agricultural, manufacturing, IT, consulting service, R&D"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">Financial Year *</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Financial Year *</label>
               <select
                 value={formData.financialYear}
                 onChange={(e) => setFormData({ ...formData, financialYear: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none text-gray-900 bg-white"
+                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 outline-none text-gray-900 bg-white hover:border-gray-300"
               >
                 <option value="2024-25">2024-25</option>
                 <option value="2023-24">2023-24</option>
@@ -335,8 +335,8 @@ const AddCompanyPage: React.FC = () => {
                 <option value="2021-22">2021-22</option>
                 <option value="2020-21">2020-21</option>
               </select>
-              <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-800 font-medium">
+              <div className="mt-3 p-4 bg-gradient-to-r from-blue-50/80 via-indigo-50/80 to-blue-50/80 rounded-xl border border-blue-200/50 backdrop-blur-sm">
+                <p className="text-sm text-blue-800 font-medium tracking-wide">
                   <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
                   Current Year: <span className="font-semibold">{currentYear}</span> | 
                   Previous Year: <span className="font-semibold ml-1">{prevYear}</span>
@@ -347,7 +347,7 @@ const AddCompanyPage: React.FC = () => {
             <button
               onClick={() => { addCompany(createBlankCompany()); setCurrentView('dashboard'); }}
               disabled={!formData.name || !formData.address || !formData.cin || !formData.sector || !formData.specifications}
-              className="w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:shadow-none font-semibold text-lg disabled:cursor-not-allowed"
+              className="w-full py-4 px-8 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white rounded-xl hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 disabled:from-gray-400 disabled:via-gray-500 disabled:to-gray-500 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-[1.02] disabled:transform-none disabled:shadow-none font-semibold text-lg disabled:cursor-not-allowed ring-4 ring-blue-500/20 hover:ring-blue-500/30 disabled:ring-0"
             >
               Create Company Profile
             </button>

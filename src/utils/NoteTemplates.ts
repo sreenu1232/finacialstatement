@@ -320,6 +320,19 @@ export const getNoteTemplate = (noteId: string, title: string, company: Company)
     `;
     }
 
+    // Notes that should only show the breakdown table (no template table)
+    // Note: 7, 11, 22 and 23 are excluded - they should show both tables
+    // Note 2: (b) Capital work-in-progress
+    // Note 3: (c) Investment Property
+    // Note 9: (h)(ii) Financial Assets - Trade receivables
+    // Note IDs: 2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+    const notesWithoutTemplateTable = ['2', '3', '4', '5', '6', '8', '9', '10', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
+    
+    if (notesWithoutTemplateTable.includes(noteId)) {
+      // Return only the title/description without the table
+      return `<p><strong>${title}</strong></p>`;
+    }
+
     // Default Template
     return `
     <p><strong>${title}</strong></p>
