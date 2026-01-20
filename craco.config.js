@@ -20,6 +20,8 @@ module.exports = {
         "fs": false,
         "net": false,
         "tls": false,
+        "vm": false,
+        "encoding": false,
       };
       
       // Add process plugin to make it available globally

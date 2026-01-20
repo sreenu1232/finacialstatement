@@ -1,7 +1,6 @@
 import { saveAs } from 'file-saver';
 // @ts-ignore - html-to-docx doesn't have type definitions
 import HTMLtoDOCX from 'html-to-docx';
-import { fileURLToPath } from 'url';
 
 export const exportToWord = async (elementId: string, filename: string) => {
   const element = document.getElementById(elementId);
@@ -63,4 +62,3 @@ export const exportToWord = async (elementId: string, filename: string) => {
     alert('Failed to generate Word document. Please check the console for details.');
   }
 };
-
