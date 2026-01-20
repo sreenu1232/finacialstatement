@@ -320,13 +320,541 @@ export const getNoteTemplate = (noteId: string, title: string, company: Company)
     `;
     }
 
+    // Goodwill Template
+    if (noteId === '4') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Capital work-in-progress Template
+    if (noteId === '2') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Investment Property Template
+    if (noteId === '3') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Other Intangible assets Template
+    if (noteId === '5') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Intangible assets under development Template
+    if (noteId === '6') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Investments (Non-current) Template
+    if (noteId === '8') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Trade receivables (Non-current) Template
+    if (noteId === '9') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Loans (Non-current) Template
+    if (noteId === '10') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Other non-current assets Template
+    if (noteId === '12') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Inventories Template
+    if (noteId === '13') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Investments (Current) Template
+    if (noteId === '14') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Trade receivables (Current) Template
+    if (noteId === '15') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Cash and cash equivalents Template
+    if (noteId === '16') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Bank balances Template
+    if (noteId === '17') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Loans (Current) Template
+    if (noteId === '18') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Financial Assets - Others Template
+    if (noteId === '19') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Current Tax Assets Template
+    if (noteId === '20') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Other current assets Template
+    if (noteId === '21') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
+    // Lease liabilities Template (Note 25)
+    if (noteId === '25') {
+        return `
+      <p><strong>${title}</strong></p>
+      <table style="${commonStyles}">
+        <thead>
+          <tr>
+            <th style="${thStyles}">Particulars</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.yearEnd}</th>
+            <th style="${thStyles} ${rightAlign}">As at ${company.prevYearEnd}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="${tdStyles}">...</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+            <td style="${tdStyles} ${rightAlign}">-</td>
+          </tr>
+          <tr>
+            <td style="${tdStyles}"><strong>Total</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+            <td style="${tdStyles} ${rightAlign}"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    }
+
     // Notes that should only show the breakdown table (no template table)
     // Note: 7, 11, 22 and 23 are excluded - they should show both tables
-    // Note 2: (b) Capital work-in-progress
-    // Note 3: (c) Investment Property
-    // Note 9: (h)(ii) Financial Assets - Trade receivables
-    // Note IDs: 2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
-    const notesWithoutTemplateTable = ['2', '3', '4', '5', '6', '8', '9', '10', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
+    const notesWithoutTemplateTable: string[] = [];
     
     if (notesWithoutTemplateTable.includes(noteId)) {
       // Return only the title/description without the table

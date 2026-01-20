@@ -400,4 +400,8 @@ export function calculateCFTotal(cf: CashFlowData) {
   };
 }
 
+// Compress multiple consecutive spaces to single spaces
+export function compressSpaces(text: string): string {
+  return text.replace(/  +/g, ' ');
+}
 

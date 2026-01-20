@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext';
 import { getNoteTemplate } from '../utils/NoteTemplates';
 import BreakdownTable from './BreakdownTable';
 import RichTextEditor from './RichTextEditor';
-import { calculatePLTotal } from '../utils/formatters';
+import { calculatePLTotal, compressSpaces } from '../utils/formatters';
 
 const Notes: React.FC<{ company: Company; modeOverride?: 'edit' | 'view' | 'report' }> = ({ company, modeOverride }) => {
   const { updateCompany, viewMode } = useApp();
@@ -17,10 +17,7 @@ const Notes: React.FC<{ company: Company; modeOverride?: 'edit' | 'view' | 'repo
 
   // Notes that should not show template tables (only breakdown table)
   // Note: 7, 11, 22 and 23 are excluded - they should show both tables
-  // Note 2: (b) Capital work-in-progress
-  // Note 3: (c) Investment Property  
-  // Note 9: (h)(ii) Financial Assets - Trade receivables
-  const notesWithoutTemplateTable = ['2', '3', '4', '5', '6', '8', '9', '10', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
+  const notesWithoutTemplateTable: string[] = [];
 
   // Function to remove tables from HTML content
   const removeTablesFromContent = (htmlContent: string): string => {
@@ -149,6 +146,7 @@ const Notes: React.FC<{ company: Company; modeOverride?: 'edit' | 'view' | 'repo
         {resolvedNotes.map((note: { number: string; title: string; originalNote: string; bsPath?: string }) => {
           const { number, title, originalNote, bsPath } = note;
           let noteContent = company.noteDetails?.[originalNote]?.trim() || getNoteTemplate(originalNote, title, company);
+          noteContent = compressSpaces(noteContent);
           
           // Remove tables from content for specific notes
           if (notesWithoutTemplateTable.includes(originalNote)) {
@@ -171,7 +169,7 @@ const Notes: React.FC<{ company: Company; modeOverride?: 'edit' | 'view' | 'repo
                       const cleanedContent = notesWithoutTemplateTable.includes(originalNote) 
                         ? removeTablesFromContent(content) 
                         : content;
-                      handleNoteChange(originalNote, cleanedContent);
+                      handleNoteChange(originalNote, compressSpaces(cleanedContent));
                     }}
                     placeholder="Enter note content..."
                     minHeight={150}
