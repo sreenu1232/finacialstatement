@@ -213,6 +213,16 @@ export const sampleCompanies: Company[] = [
       }
     },
     noteDetails: {},
-    breakdowns: {}
+    breakdowns: {},
+    ppeBreakdowns: {
+      '1': [
+        { id: '1', description: 'Land', grossBlock: 30000000, depreciation: 10000000 },
+        { id: '2', description: 'Buildings', grossBlock: 10000000, depreciation: 0 },
+        { id: '3', description: 'Plant and Equipment', grossBlock: 0, depreciation: 0 },
+        { id: '4', description: 'Furniture and Fixtures', grossBlock: 0, depreciation: 0 },
+        { id: '5', description: 'Vehicles', grossBlock: 0, depreciation: 0 },
+        { id: '6', description: 'Office Equipment', grossBlock: 0, depreciation: 0 }
+      ]
+    }
   }
 ];

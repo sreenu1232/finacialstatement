@@ -79,92 +79,227 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
   const paperClass = paperSize === 'A4' ? 'w-[210mm] min-h-[297mm] p-[20mm]' : 'w-full max-w-4xl p-8';
 
   const handlePrint = () => {
-    // Hide any elements that shouldn't appear in print
+    // Create comprehensive print styles
     const style = document.createElement('style');
+    style.id = 'print-styles';
     style.textContent = `
       @page {
         size: A4;
-        margin: 1.5cm 2cm 2cm 2cm;
+        margin: 15mm 15mm 20mm 15mm;
       }
-      @page :first {
-        margin-top: 0;
-      }
-      body { margin: 0; }
-      .no-print { display: none !important; }
+      
+      @media print {
+        /* Reset everything */
+        * {
+          box-sizing: border-box;
+        }
+        
+        html, body {
+          width: 210mm;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: white !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        
+        /* Hide all non-print elements */
+        .no-print,
+        .print\\:hidden,
+        button:not(.print-show),
+        input,
+        select,
+        textarea,
+        nav,
+        header:not(.print-header),
+        [class*="sidebar"],
+        [class*="Sidebar"] {
+          display: none !important;
+        }
+        
+        /* Report container */
+        #full-report-content {
+          width: 100% !important;
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          background: white !important;
+        }
+        
+        /* Cover page styles */
+        .cover-page {
+          page-break-after: always;
+          min-height: 100vh;
+          display: flex !important;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%) !important;
+          color: white !important;
+          text-align: center;
+          padding: 40mm 20mm;
+        }
+        
+        .cover-page h1 {
+          font-size: 32pt !important;
+          font-weight: bold !important;
+          margin-bottom: 10mm !important;
+          color: white !important;
+        }
+        
+        .cover-page p {
+          font-size: 14pt !important;
+          color: rgba(255,255,255,0.9) !important;
+        }
 
-      /* Professional print styles */
-      .cover-page {
-        page-break-after: always;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        text-align: center;
-        padding: 2rem;
-      }
+        /* Section headers */
+        .section-header {
+          display: block !important;
+          background: #f8fafc !important;
+          border-left: 4px solid #2563eb !important;
+          padding: 12pt 16pt !important;
+          margin-bottom: 16pt !important;
+          page-break-after: avoid;
+          page-break-inside: avoid;
+        }
 
-      .cover-logo {
-        max-width: 300px;
-        max-height: 200px;
-        margin-bottom: 2rem;
-        filter: brightness(0) invert(1);
-      }
+        .section-header .section-title {
+          font-size: 16pt !important;
+          font-weight: bold !important;
+          color: #1e293b !important;
+          margin: 0 0 4pt 0 !important;
+          text-transform: uppercase;
+          letter-spacing: 0.5pt;
+        }
 
-      .cover-title {
-        font-size: 3rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      }
+        .section-header .section-subtitle {
+          font-size: 10pt !important;
+          color: #64748b !important;
+          margin: 0 !important;
+        }
 
-      .cover-subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-      }
+        /* Section spacing */
+        section {
+          page-break-inside: avoid;
+          margin-bottom: 0 !important;
+        }
+        
+        .page-break-after {
+          page-break-after: always !important;
+        }
 
-      .section-header {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        border-left: 4px solid #3b82f6;
-        padding: 1.5rem 2rem;
-        margin-bottom: 2rem;
-        page-break-after: avoid;
-      }
+        /* Tables */
+        table {
+          width: 100% !important;
+          border-collapse: collapse !important;
+          font-size: 9pt !important;
+          page-break-inside: auto;
+        }
+        
+        thead {
+          display: table-header-group;
+        }
+        
+        tr {
+          page-break-inside: avoid;
+          page-break-after: auto;
+        }
+        
+        th, td {
+          padding: 6pt 8pt !important;
+          border: 0.5pt solid #d1d5db !important;
+          text-align: left;
+        }
+        
+        th {
+          background: #f1f5f9 !important;
+          font-weight: 600 !important;
+        }
+        
+        /* Text alignment */
+        .text-right, td.text-right, th.text-right {
+          text-align: right !important;
+        }
+        
+        .text-center, td.text-center, th.text-center {
+          text-align: center !important;
+        }
 
-      .section-title {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #1e293b;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
+        /* Font sizes */
+        .text-sm {
+          font-size: 9pt !important;
+        }
+        
+        .text-xs {
+          font-size: 8pt !important;
+        }
 
-      .section-subtitle {
-        font-size: 1rem;
-        color: #64748b;
-        font-weight: 500;
-      }
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 {
+          page-break-after: avoid;
+          page-break-inside: avoid;
+        }
 
-      .financial-statement {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        /* Footer */
+        footer {
+          page-break-inside: avoid;
+          margin-top: 20pt !important;
+          padding: 12pt !important;
+          border-top: 1pt solid #e5e7eb !important;
+          background: white !important;
+          font-size: 8pt !important;
+          color: #6b7280 !important;
+        }
+
+        /* Remove shadows and gradients */
+        .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
+          box-shadow: none !important;
+        }
+
+        /* Ensure colors print */
+        .bg-blue-50, .bg-blue-100 {
+          background-color: #eff6ff !important;
+        }
+        
+        .bg-gray-50 {
+          background-color: #f9fafb !important;
+        }
+        
+        /* Notes section */
+        .space-y-4 > * + * {
+          margin-top: 12pt !important;
+        }
+
+        /* Hide interactive elements */
+        [contenteditable="true"] {
+          border: none !important;
+          outline: none !important;
+        }
       }
     `;
+    
+    // Remove existing print styles if any
+    const existingStyle = document.getElementById('print-styles');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
     document.head.appendChild(style);
-
-    window.print();
-
-    // Clean up
+    
+    // Small delay to ensure styles are applied
     setTimeout(() => {
-      document.head.removeChild(style);
-    }, 1000);
+      window.print();
+    }, 100);
+
+    // Clean up after print
+    setTimeout(() => {
+      const styleToRemove = document.getElementById('print-styles');
+      if (styleToRemove) {
+        styleToRemove.remove();
+      }
+    }, 2000);
   };
 
   const handleExportWord = () => {
@@ -172,8 +307,9 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
   };
 
   return (
-    <div className="flex flex-col items-center bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen py-8 print:bg-white print:py-0">
-      <div className="w-full max-w-[210mm] flex justify-end gap-3 mb-6 print:hidden">
+    <div className="flex flex-col items-center bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen py-8 print:bg-white print:py-0 print:min-h-0 print:block">
+      {/* Action Buttons - Hidden in print */}
+      <div className="w-full max-w-[210mm] flex justify-end gap-3 mb-6 print:hidden no-print">
         <button
           onClick={handleExportWord}
           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -192,124 +328,112 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
 
       {/* Validation Dashboard - Only visible in Edit Mode */}
       {viewMode === 'edit' && (
-        <div className="w-full max-w-[210mm] mb-6 print:hidden">
+        <div className="w-full max-w-[210mm] mb-6 print:hidden no-print">
           <ValidationDashboard company={company} />
         </div>
       )}
 
+      {/* Main Report Content */}
       <div
         id="full-report-content"
-        className={`bg-white shadow-2xl print:shadow-none print:w-full mx-auto transition-all duration-300 rounded-2xl overflow-hidden ${paperClass}`}
+        className={`bg-white shadow-2xl print:shadow-none print:w-full print:max-w-none mx-auto transition-all duration-300 rounded-2xl print:rounded-none overflow-hidden ${paperClass}`}
         style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}
       >
         {/* Cover Page - Only visible in print */}
-        <div className="cover-page print:block hidden">
+        <div className="cover-page hidden print:flex print:flex-col print:justify-center print:items-center">
           {logo && (
             <img
               src={logo}
               alt={`${company.name} Logo`}
-              className="cover-logo"
+              className="max-w-[200px] max-h-[100px] mb-8 object-contain"
+              style={{ filter: 'brightness(0) invert(1)' }}
             />
           )}
-          <h1 className="cover-title">{company.name}</h1>
-          <p className="cover-subtitle">Financial Statements</p>
-          <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold mb-4 text-white">{company.name}</h1>
+          <p className="text-2xl mb-8 text-white opacity-90">Financial Statements</p>
+          <div className="text-center space-y-2 text-white">
             <p className="text-lg">For the year ended {company.yearEnd}</p>
-            <p className="text-sm opacity-0.8">{company.financialYear}</p>
-          </div>
-        </div>
-
-        {/* Company Header - Only visible in print after cover page */}
-        <div className="print:block hidden bg-white p-8 border-b-2 border-gray-200">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl font-bold tracking-tight" style={{ color: primaryColor }}>
-              {company.name}
-            </h2>
-            <div className="text-gray-600 space-y-2">
-              <p className="text-lg">{company.address}</p>
-              <div className="flex justify-center gap-6 text-sm">
-                <span className="px-4 py-2 bg-gray-100 rounded-lg border">CIN: {company.cin}</span>
-                <span className="px-4 py-2 bg-gray-100 rounded-lg border">PAN: {company.pan}</span>
-              </div>
-              <p className="text-base font-medium">{company.sector} - {company.specifications}</p>
-              <p className="text-sm">Financial Year: {company.financialYear}</p>
-              <p className="text-xl font-semibold" style={{ color: secondaryColor }}>For the year ended {company.yearEnd}</p>
-            </div>
+            <p className="text-sm opacity-80">{company.financialYear}</p>
           </div>
         </div>
 
         {/* Screen Header - Only visible on screen */}
-        <section className="text-center space-y-8 page-break-after bg-gradient-to-r from-gray-50 to-white py-12 px-8 print:hidden">
+        <section className="text-center space-y-8 bg-gradient-to-r from-gray-50 to-white py-12 px-8 print:hidden no-print">
           {logo && (
-            <div className="flex justify-center mb-6 print:mb-4">
+            <div className="flex justify-center mb-6">
               <img
                 src={logo}
                 alt={`${company.name} logo`}
-                className="max-h-28 print:max-h-20 object-contain drop-shadow-sm"
+                className="max-h-28 object-contain drop-shadow-sm"
               />
             </div>
           )}
-          <div className="space-y-4 print:space-y-2">
-            <div className="inline-block px-4 py-2 bg-gray-100 rounded-full print:bg-white print:border print:border-gray-300">
+          <div className="space-y-4">
+            <div className="inline-block px-4 py-2 bg-gray-100 rounded-full">
               <p className="uppercase tracking-widest text-xs font-semibold text-gray-600">Financial Statements</p>
             </div>
-            <h2 className="text-5xl print:text-3xl font-bold tracking-tight" style={{ color: primaryColor }}>
+            <h2 className="text-5xl font-bold tracking-tight" style={{ color: primaryColor }}>
               {company.name}
             </h2>
           </div>
-          <div className="text-gray-600 leading-relaxed space-y-2 max-w-2xl mx-auto print:max-w-none print:space-y-1">
-            <p className="text-lg print:text-base">{company.address}</p>
-            <div className="flex justify-center gap-6 text-sm print:flex-col print:gap-2 print:items-center">
-              <span className="px-3 py-1 bg-white rounded-lg shadow-sm print:bg-gray-50 print:shadow-none print:border print:border-gray-300">CIN: {company.cin}</span>
-              <span className="px-3 py-1 bg-white rounded-lg shadow-sm print:bg-gray-50 print:shadow-none print:border print:border-gray-300">PAN: {company.pan}</span>
+          <div className="text-gray-600 leading-relaxed space-y-2 max-w-2xl mx-auto">
+            <p className="text-lg">{company.address}</p>
+            <div className="flex justify-center gap-6 text-sm">
+              <span className="px-3 py-1 bg-white rounded-lg shadow-sm">CIN: {company.cin}</span>
+              <span className="px-3 py-1 bg-white rounded-lg shadow-sm">PAN: {company.pan}</span>
             </div>
-            <p className="text-base print:text-sm font-medium">{company.sector} - {company.specifications}</p>
-            <p className="text-sm print:text-xs">Financial Year: {company.financialYear}</p>
-            <p className="text-lg print:text-base font-semibold" style={{ color: secondaryColor }}>For the year ended {company.yearEnd}</p>
+            <p className="text-base font-medium">{company.sector} - {company.specifications}</p>
+            <p className="text-sm">Financial Year: {company.financialYear}</p>
+            <p className="text-lg font-semibold" style={{ color: secondaryColor }}>For the year ended {company.yearEnd}</p>
           </div>
         </section>
 
-        <section className="page-break-after print:mt-8">
-          <div className="section-header print:block hidden">
+        {/* Balance Sheet Section */}
+        <section className="page-break-after">
+          <div className="section-header hidden print:block">
             <h3 className="section-title">Balance Sheet</h3>
             <p className="section-subtitle">As at {company.yearEnd}</p>
           </div>
-          <div className="px-8 print:px-6">
+          <div className="px-8 print:px-4">
             <BalanceSheet company={company} modeOverride="report" />
           </div>
         </section>
 
-        <section className="page-break-after print:mt-8">
-          <div className="section-header print:block hidden">
-            <h3 className="section-title">Profit & Loss Account</h3>
+        {/* Profit & Loss Section */}
+        <section className="page-break-after">
+          <div className="section-header hidden print:block">
+            <h3 className="section-title">Statement of Profit & Loss</h3>
             <p className="section-subtitle">For the year ended {company.yearEnd}</p>
           </div>
-          <div className="px-8 print:px-6">
+          <div className="px-8 print:px-4">
             <ProfitLoss company={company} modeOverride="report" />
           </div>
         </section>
 
-        <section className="page-break-after print:mt-8">
-          <div className="section-header print:block hidden">
+        {/* Cash Flow Section */}
+        <section className="page-break-after">
+          <div className="section-header hidden print:block">
             <h3 className="section-title">Cash Flow Statement</h3>
             <p className="section-subtitle">For the year ended {company.yearEnd}</p>
           </div>
-          <div className="px-8 print:px-6">
+          <div className="px-8 print:px-4">
             <CashFlow company={company} modeOverride="report" />
           </div>
         </section>
 
-        <section className="page-break-after print:mt-8">
-          <div className="section-header print:block hidden">
-            <h3 className="section-title">Notes to Accounts</h3>
+        {/* Notes Section */}
+        <section>
+          <div className="section-header hidden print:block">
+            <h3 className="section-title">Notes to Financial Statements</h3>
             <p className="section-subtitle">For the year ended {company.yearEnd}</p>
           </div>
-          <div className="px-8 print:px-6">
+          <div className="px-8 print:px-4">
             <Notes company={company} modeOverride="report" />
           </div>
         </section>
 
-        <footer className="text-center text-xs text-gray-500 mt-20 print:mt-12 py-8 bg-gray-50 border-t border-gray-100 print:bg-white print:border-t print:border-gray-300 print:py-4">
+        {/* Footer */}
+        <footer className="text-center text-xs text-gray-500 mt-20 print:mt-8 py-8 bg-gray-50 border-t border-gray-100 print:bg-white print:border-t print:border-gray-300 print:py-4">
           <div className="max-w-2xl mx-auto space-y-2 print:space-y-1">
             <p className="font-medium">This report was generated on {new Date().toLocaleDateString('en-IN', { 
               year: 'numeric', 

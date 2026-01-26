@@ -279,6 +279,85 @@ export interface BreakdownItem {
   previous: number;
 }
 
+export interface PPEBreakdownItem {
+  id: string;
+  description: string;
+  grossBlock: number;
+  depreciation: number;
+}
+
+export interface ShareCapitalItem {
+  id: string;
+  description: string;
+  currentAmount: number;
+  previousAmount: number;
+}
+
+export interface ReconciliationItem {
+  id: string;
+  description: string;
+  currentCount: number;
+  currentAmount: number;
+  previousCount: number;
+  previousAmount: number;
+}
+
+export interface ShareholderItem {
+  id: string;
+  name: string;
+  currentCount: number;
+  currentPercentage: number;
+  previousCount: number;
+  previousPercentage: number;
+}
+
+export interface PromoterItem {
+  id: string;
+  name: string;
+  currentCount: number;
+  currentPercentage: number;
+  changePercentage: number;
+}
+
+export interface ShareCapitalData {
+  authorised: ShareCapitalItem[];
+  issued: ShareCapitalItem[];
+  reconciliation: ReconciliationItem[];
+  shareholders: ShareholderItem[];
+  promoters: PromoterItem[];
+}
+
+export interface BorrowingItem {
+  id: string;
+  description: string;
+  currentAmount: number;
+  previousAmount: number;
+}
+
+export interface BorrowingsData {
+  secured: BorrowingItem[];
+  unsecured: BorrowingItem[];
+  securityDetails: string;
+}
+
+export interface TradePayableItem {
+  id: string;
+  description: string;
+  lessThan1Year: number;
+  oneToTwoYears: number;
+  twoToThreeYears: number;
+  moreThan3Years: number;
+  notDue: number;
+}
+
+export interface TradePayablesData {
+  msme: TradePayableItem[];
+  others: TradePayableItem[];
+  disputedMsme: TradePayableItem[];
+  disputedOthers: TradePayableItem[];
+  disclosures: string;
+}
+
 export interface Company {
   id: number;
   name: string;
@@ -295,6 +374,10 @@ export interface Company {
   cashFlow: CashFlowData;
   noteDetails: Record<string, string>;
   breakdowns: Record<string, BreakdownItem[]>;
+  ppeBreakdowns?: Record<string, PPEBreakdownItem[]>;
+  shareCapitalDetails?: Record<string, ShareCapitalData>;
+  borrowingsDetails?: Record<string, BorrowingsData>;
+  tradePayablesDetails?: Record<string, TradePayablesData>;
   settings: CompanySettings;
 }
 

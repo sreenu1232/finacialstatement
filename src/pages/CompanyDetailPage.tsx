@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, LogOut, Eye } from 'lucide-react';
+import { ArrowLeft, LogOut, Eye, Edit3, FileSpreadsheet, TrendingUp, DollarSign, FileText, BookOpen } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import BalanceSheet from '../components/BalanceSheet';
 import ProfitLoss from '../components/ProfitLoss';
@@ -20,89 +20,121 @@ const CompanyDetailPage: React.FC = () => {
 
   if (!company) return <div>Company not found</div>;
 
+  const tabs = [
+    { key: 'balance-sheet', label: 'Balance Sheet', icon: FileSpreadsheet },
+    { key: 'profit-loss', label: 'Profit & Loss', icon: TrendingUp },
+    { key: 'cash-flow', label: 'Cash Flow', icon: DollarSign },
+    { key: 'notes', label: 'Notes', icon: FileText },
+    { key: 'full-report', label: 'Full Report', icon: BookOpen }
+  ];
+
+  const showPreviewToggle = activeTab === 'balance-sheet' || activeTab === 'profit-loss' || activeTab === 'full-report';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/50 flex">
-      {/* Masters Sidebar */}
-      <MastersSidebar company={company} onSettingsUpdate={handleSettingsUpdate} />
+    <div className="h-screen bg-slate-50 flex overflow-hidden print:h-auto print:overflow-visible print:bg-white print:block">
+      {/* Masters Sidebar - Hidden in print */}
+      <div className="print:hidden">
+        <MastersSidebar company={company} onSettingsUpdate={handleSettingsUpdate} />
+      </div>
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <div className="bg-white/90 backdrop-blur-md shadow-md border-b border-gray-100/50 sticky top-0 z-10">
-          <div className="px-6 py-5 flex justify-between items-center">
-            <div className="flex items-center gap-4">
+      <div className="flex-1 flex flex-col min-w-0 print:block">
+        {/* Header - Hidden in print */}
+        <header className="bg-white border-b border-slate-200 shrink-0 print:hidden">
+          <div className="px-6 py-4 flex items-center justify-between gap-4">
+            {/* Left: Back + Company Info */}
+            <div className="flex items-center gap-4 min-w-0">
               <button 
                 onClick={() => { setCurrentView('dashboard'); setSelectedCompanyId(null); }} 
-                className="p-3 hover:bg-gray-100 rounded-xl transition-all duration-300 border border-transparent hover:border-gray-200"
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors shrink-0"
+                title="Back to Dashboard"
               >
-                <ArrowLeft size={20} className="text-gray-600" />
+                <ArrowLeft size={20} className="text-slate-600" />
               </button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{company.name}</h1>
-                <p className="text-sm text-gray-600 font-medium mt-0.5">{company.sector} - {company.specifications}</p>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">{company.address}</p>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs text-gray-600 font-mono bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100">CIN: {company.cin}</span>
-                  <span className="text-xs text-gray-600 font-mono bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100">FY: {company.financialYear}</span>
-                </div>
+              
+              <div className="min-w-0">
+                <h1 className="text-xl font-bold text-slate-900 truncate">{company.name}</h1>
+                <p className="text-sm text-slate-500 truncate">{company.sector} · {company.specifications}</p>
+              </div>
+
+              <div className="hidden lg:flex items-center gap-2 text-xs text-slate-500 shrink-0">
+                <span className="px-2 py-1 bg-slate-100 rounded font-mono">CIN: {company.cin}</span>
+                <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded font-semibold">FY: {company.financialYear}</span>
               </div>
             </div>
+
+            {/* Right: Logout */}
             <button 
               onClick={logout} 
-              className="flex items-center gap-2 px-5 py-2.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium border border-transparent hover:border-red-200"
+              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium text-sm shrink-0"
             >
               <LogOut size={18} />
-              Logout
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
-        </div>
+        </header>
 
-        <div className="flex-1 overflow-auto">
-          <div className="p-8">
-            <div className="bg-white/98 backdrop-blur-xl rounded-2xl shadow-xl mb-8 border border-gray-100/50 overflow-hidden">
-              <div className="flex border-b border-gray-100">
-                {[
-                  { key: 'balance-sheet', label: 'Balance Sheet', icon: '📊' },
-                  { key: 'profit-loss', label: 'Profit & Loss', icon: '💰' },
-                  { key: 'cash-flow', label: 'Cash Flow', icon: '💸' },
-                  { key: 'notes', label: 'Notes', icon: '📝' },
-                  { key: 'full-report', label: 'Full Report', icon: '📄' }
-                ].map((tab) => (
+        {/* Tabs Navigation - Hidden in print */}
+        <div className="bg-white border-b border-slate-200 shrink-0 print:hidden">
+          <div className="px-6 flex items-center justify-between">
+            <nav className="flex items-center gap-1 -mb-px">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.key;
+                return (
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key as any)}
-                    className={`flex-1 px-6 py-4 font-semibold transition-all duration-300 flex items-center justify-center gap-2 border-b-2 ${
-                      activeTab === tab.key 
-                        ? 'bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white shadow-lg border-transparent' 
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-transparent hover:border-gray-200'
-                    }`}
+                    className={`
+                      flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all
+                      ${isActive 
+                        ? 'border-blue-600 text-blue-600' 
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                      }
+                    `}
                   >
-                    <span className="text-lg">{tab.icon}</span>
-                    <span className="tracking-wide">{tab.label}</span>
+                    <Icon size={18} className={isActive ? 'text-blue-600' : 'text-slate-400'} />
+                    <span className="hidden md:inline">{tab.label}</span>
                   </button>
-                ))}
-              </div>
+                );
+              })}
+            </nav>
 
-              {(activeTab === 'balance-sheet' || activeTab === 'profit-loss' || activeTab === 'full-report') && (
-                <div className="p-6 bg-gradient-to-r from-gray-50/80 via-blue-50/50 to-gray-50/80 border-b border-gray-100 flex justify-end backdrop-blur-sm">
-                  <button 
-                    onClick={() => setViewMode(viewMode === 'edit' ? 'preview' : 'edit')} 
-                    className={`px-6 py-3 rounded-xl flex items-center gap-3 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] ring-4 ${
-                      viewMode === 'preview' 
-                        ? 'bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white ring-blue-500/20 hover:ring-blue-500/30' 
-                        : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-blue-500 ring-transparent'
-                    }`}
-                  >
-                    <Eye size={18} />
-                    {viewMode === 'edit' ? 'Preview Mode' : 'Edit Mode'}
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Preview Toggle */}
+            {showPreviewToggle && (
+              <button 
+                onClick={() => setViewMode(viewMode === 'edit' ? 'preview' : 'edit')} 
+                className={`
+                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
+                  ${viewMode === 'preview' 
+                    ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700' 
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }
+                `}
+              >
+                {viewMode === 'edit' ? (
+                  <>
+                    <Eye size={16} />
+                    <span className="hidden sm:inline">Preview</span>
+                  </>
+                ) : (
+                  <>
+                    <Edit3 size={16} />
+                    <span className="hidden sm:inline">Edit</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
 
+        {/* Content Area */}
+        <main className="flex-1 overflow-auto print:overflow-visible">
+          <div className="p-6 print:p-0">
             {activeTab === 'full-report' ? (
               <SeamlessFullReport company={company} />
             ) : (
-              <div className="bg-white/98 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-gray-100/50">
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print:shadow-none print:border-0 print:rounded-none">
                 {activeTab === 'balance-sheet' && <BalanceSheet company={company} />}
                 {activeTab === 'profit-loss' && <ProfitLoss company={company} />}
                 {activeTab === 'cash-flow' && <CashFlow company={company} />}
@@ -110,7 +142,7 @@ const CompanyDetailPage: React.FC = () => {
               </div>
             )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

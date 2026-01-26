@@ -61,214 +61,298 @@
 /* Print styles for A4 pages */
 @media print {
   @page {
-    size: A4;
-    margin: 1.5cm 2cm 2cm 2cm;
-    @top-center {
-      content: none;
-    }
-    @bottom-center {
-      content: none;
-    }
+    size: A4 portrait;
+    margin: 12mm 15mm 15mm 15mm;
   }
 
-  /* Hide browser print headers/footers */
   @page :first {
     margin-top: 0;
   }
 
-  /* Remove any default headers */
-  html, body {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .page-break-after {
-    page-break-after: always;
-    margin-bottom: 0;
-  }
-
-  .page-break-before {
-    page-break-before: always;
-    margin-top: 0;
-  }
-
-  .no-break {
-    page-break-inside: avoid;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    font-size: 11pt;
-    line-height: 1.4;
-    background: white !important;
-  }
-
-  /* Hide all non-print elements */
-  .print\\:hidden,
-  button,
-  input,
-  select,
-  .no-print {
-    display: none !important;
-  }
-
-  .print\\:p-6 {
-    padding: 0;
-  }
-
-  .print\\:bg-white {
-    background: white !important;
-  }
-
-  /* Ensure tables fit on page and don't break awkwardly */
-  table {
-    page-break-inside: avoid;
-    font-size: 9pt;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-
-  /* Prevent orphaned headers */
-  h1, h2, h3, h4, h5, h6 {
-    page-break-after: avoid;
-    page-break-inside: avoid;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Section spacing */
-  section {
-    margin-bottom: 2rem;
-  }
-
-  /* Ensure proper spacing between elements */
-  .space-y-8 > * + * {
-    margin-top: 0;
-  }
-
-  .space-y-4 > * + * {
-    margin-top: 0;
-  }
-
-  /* Logo sizing for print */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Text alignment and spacing */
-  .text-center {
-    text-align: center;
-  }
-
-  .text-right {
-    text-align: right;
-  }
-
-  .text-left {
-    text-align: left;
-  }
-
-  /* Ensure borders are visible */
-  .border {
-    border: 1px solid #000 !important;
-  }
-
-  /* Table cell padding */
-  td, th {
-    padding: 4px 6px;
-    border: 1px solid #000 !important;
-  }
-
-  /* Footer positioning */
-  footer {
-    position: relative;
-    margin-top: 3rem;
-    page-break-inside: avoid;
-  }
-
-  /* Ensure proper table layout */
-  .table-design-classic,
-  .table-design-modern {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-  }
-
-  .table-design-classic th,
-  .table-design-classic td,
-  .table-design-modern th,
-  .table-design-modern td {
-    border: 1px solid #000;
-    padding: 4px 6px;
-    font-size: 9pt;
-  }
-
-  /* Rich text editor print styles */
-  .rich-text-content {
-    font-size: 10pt;
-    line-height: 1.4;
-  }
-
-  .rich-text-content h1 {
-    font-size: 14pt;
-    font-weight: bold;
-    margin: 12pt 0 8pt 0;
-  }
-
-  .rich-text-content h2 {
-    font-size: 12pt;
-    font-weight: bold;
-    margin: 10pt 0 6pt 0;
-  }
-
-  .rich-text-content h3 {
-    font-size: 11pt;
-    font-weight: bold;
-    margin: 8pt 0 4pt 0;
-  }
-
-  .rich-text-content p {
-    margin: 4pt 0;
-  }
-
-  .rich-text-content ul,
-  .rich-text-content ol {
-    margin: 4pt 0 4pt 16pt;
-  }
-
-  .rich-text-content li {
-    margin: 2pt 0;
-  }
-
-  /* Component specific print styles */
-  .balance-sheet-title,
-  .profit-loss-title,
-  .cash-flow-title,
-  .notes-title {
-    font-size: 14pt;
-    font-weight: bold;
-    margin-bottom: 8pt;
-    text-align: center;
-    page-break-after: avoid;
-  }
-
-  /* Ensure no unwanted spacing */
-  * {
+  /* Reset and base styles */
+  *, *::before, *::after {
     box-sizing: border-box;
   }
 
-  /* Hide shadows and gradients in print */
-  .shadow-lg,
-  .shadow-xl,
-  .shadow-2xl,
-  .bg-gradient-to-r,
-  .bg-gradient-to-br {
-    box-shadow: none !important;
+  html {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
     background: white !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Hide ALL non-print elements aggressively */
+  .print\:hidden,
+  .no-print,
+  button,
+  input,
+  select,
+  textarea,
+  nav,
+  [class*="sidebar"],
+  [class*="Sidebar"],
+  [class*="MastersSidebar"],
+  header:not(.print-header),
+  .validation-dashboard,
+  [contenteditable="true"]:empty::before {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Show print-only elements */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:flex {
+    display: flex !important;
+  }
+
+  /* Page breaks */
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .no-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Container resets */
+  .h-screen,
+  .min-h-screen {
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .overflow-hidden,
+  .overflow-auto {
+    overflow: visible !important;
+  }
+
+  .flex {
+    display: block !important;
+  }
+
+  #full-report-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+
+  /* Section and content styling */
+  section {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  .px-8, .px-6, .px-4 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .py-8, .py-6, .py-4, .py-12 {
+    padding-top: 8pt !important;
+    padding-bottom: 8pt !important;
+  }
+
+  .p-6, .p-8 {
+    padding: 8pt !important;
+  }
+
+  /* Tables - Professional styling */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 9pt !important;
+    margin-bottom: 12pt !important;
+    page-break-inside: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tbody {
+    display: table-row-group !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+  }
+
+  th, td {
+    padding: 4pt 6pt !important;
+    border: 0.5pt solid #9ca3af !important;
+    text-align: left !important;
+    vertical-align: top !important;
+    font-size: 9pt !important;
+  }
+
+  th {
+    background-color: #f3f4f6 !important;
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+  }
+
+  /* Text alignments */
+  .text-right, td.text-right, th.text-right, [class*="text-right"] {
+    text-align: right !important;
+  }
+
+  .text-center, td.text-center, th.text-center, [class*="text-center"] {
+    text-align: center !important;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    margin-top: 0 !important;
+  }
+
+  h1 { font-size: 16pt !important; }
+  h2 { font-size: 14pt !important; }
+  h3 { font-size: 12pt !important; }
+  h4 { font-size: 11pt !important; }
+
+  /* Section headers for print */
+  .section-header {
+    background: #f8fafc !important;
+    border-left: 3pt solid #2563eb !important;
+    padding: 10pt 12pt !important;
+    margin-bottom: 12pt !important;
+    page-break-after: avoid !important;
+  }
+
+  .section-header .section-title {
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    color: #1e293b !important;
+    margin: 0 0 4pt 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5pt !important;
+  }
+
+  .section-header .section-subtitle {
+    font-size: 9pt !important;
+    color: #64748b !important;
+    margin: 0 !important;
+  }
+
+  /* Cover page */
+  .cover-page {
+    page-break-after: always !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%) !important;
+    color: white !important;
+    text-align: center !important;
+    padding: 30mm 20mm !important;
+  }
+
+  .cover-page * {
+    color: white !important;
+  }
+
+  /* Rich text content */
+  .rich-text-content {
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .rich-text-content table {
+    border: 0.5pt solid #9ca3af !important;
+  }
+
+  /* Footer */
+  footer {
+    page-break-inside: avoid !important;
+    margin-top: 16pt !important;
+    padding: 8pt !important;
+    border-top: 0.5pt solid #d1d5db !important;
+    font-size: 8pt !important;
+    color: #6b7280 !important;
+    background: white !important;
+  }
+
+  /* Remove all shadows */
+  .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
+    box-shadow: none !important;
+  }
+
+  /* Background colors for print */
+  .bg-blue-50, .bg-blue-100 {
+    background-color: #eff6ff !important;
+  }
+
+  .bg-gray-50, .bg-slate-50 {
+    background-color: #f9fafb !important;
+  }
+
+  .bg-gray-100, .bg-slate-100 {
+    background-color: #f3f4f6 !important;
+  }
+
+  /* Notes specific */
+  .space-y-4 > * + * {
+    margin-top: 8pt !important;
+  }
+
+  /* Rounded corners - remove for cleaner print */
+  .rounded-xl, .rounded-2xl, .rounded-lg, .rounded-md {
+    border-radius: 0 !important;
+  }
+
+  /* Borders */
+  .border-slate-200, .border-gray-200 {
+    border-color: #d1d5db !important;
+  }
+
+  /* Font weights */
+  .font-bold {
+    font-weight: 700 !important;
+  }
+
+  .font-semibold {
+    font-weight: 600 !important;
+  }
+
+  /* Links */
+  a {
+    color: #1e40af !important;
+    text-decoration: none !important;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
   }
 }
 
