@@ -52,15 +52,6 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
     );
   };
 
-  const renderNoteCell = (note?: string) => {
-    const resolved = note ? noteIndex.map[note] : undefined;
-    return (
-      <td className="border p-2 text-right text-xs sm:text-sm">
-        {resolved ?? '-'}
-      </td>
-    );
-  };
-
   const handleNoteClick = (noteNumber: string) => {
     setActiveTab('notes');
     setTimeout(() => {
