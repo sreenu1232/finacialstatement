@@ -68,9 +68,7 @@ const notesWithoutTemplateTable: string[] = [
   '36', '37', '38', '39', '40', '41', '42', '43', '44', '45',
   '46', '47', '48', '49', '50', '51', '52', '53', '54', '55',
   '56', '57', '58', '59', '60', '61', '62', '63', '64', '65',
-  '66', '67', '68', '69', '70', '71', '72', '73', '74', '75',
-  '76', '77', '78', '79', '80', '81', '82', '83', '84', '85',
-  '86', '87', '88', '89', '90', '91', '92',
+  '66', '67', '68', '69',
 ];
 
 const removeTablesFromContent = (htmlContent: string): string => {
@@ -85,6 +83,49 @@ const removeTablesFromContent = (htmlContent: string): string => {
   }
 
   cleaned = cleaned.replace(/<\/?(?:thead|tbody|tfoot|tr|th|td)[^>]*>/gi, '');
+  return cleaned.trim();
+};
+
+const removeHeadingFromContent = (htmlContent: string, title: string): string => {
+  if (!htmlContent || !title) return htmlContent;
+
+  // Remove leading/trailing whitespace and normalize
+  let cleaned = htmlContent.trim();
+  const normalizedTitle = title.trim();
+
+  // Escape special regex characters in title
+  const escapedTitle = normalizedTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // Pattern 1: Remove <p><strong>title</strong></p> at the start (with optional whitespace)
+  // This handles cases like <p><strong>(a) Property, Plant and Equipment</strong></p>
+  const pattern1 = new RegExp(
+    `^<p>\\s*<strong>\\s*${escapedTitle}\\s*</strong>\\s*</p>\\s*`,
+    'i'
+  );
+  cleaned = cleaned.replace(pattern1, '');
+
+  // Pattern 2: Remove <p><strong>number. title</strong></p> at the start
+  // This handles cases where the number is included in the content
+  const pattern2 = new RegExp(
+    `^<p>\\s*<strong>\\s*\\d+\\.\\s*${escapedTitle}\\s*</strong>\\s*</p>\\s*`,
+    'i'
+  );
+  cleaned = cleaned.replace(pattern2, '');
+
+  // Pattern 3: Remove <strong>title</strong> wrapped in any tag at the start
+  const pattern3 = new RegExp(
+    `^<[^>]+>\\s*<strong>\\s*${escapedTitle}\\s*</strong>\\s*</[^>]+>\\s*`,
+    'i'
+  );
+  cleaned = cleaned.replace(pattern3, '');
+
+  // Pattern 4: Remove standalone <strong>title</strong> at the start (not wrapped in p tag)
+  const pattern4 = new RegExp(
+    `^<strong>\\s*${escapedTitle}\\s*</strong>\\s*`,
+    'i'
+  );
+  cleaned = cleaned.replace(pattern4, '');
+
   return cleaned.trim();
 };
 
@@ -234,29 +275,44 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
   };
 
   const handleShareCapitalUpdate = (noteId: string, data: any) => {
-    // Calculate total from issued shares
+    // Calculate total from issued shares - use currentAmount and previousAmount directly
     const totalCurrent = (data.issued || []).reduce((sum: number, item: any) => 
-      sum + (Number(item.numberOfShares) || 0) * (Number(item.faceValue) || 0), 0);
+      sum + (Number(item.currentAmount) || 0), 0);
     const totalPrevious = (data.issued || []).reduce((sum: number, item: any) => 
-      sum + (Number(item.previousNumberOfShares) || 0) * (Number(item.faceValue) || 0), 0);
+      sum + (Number(item.previousAmount) || 0), 0);
     
     // Update balance sheet
     const bsPath = getFinancialPath(noteId);
-    let updatedBalanceSheet = { ...company.balanceSheet };
-    
-    if (bsPath) {
-      const keys = bsPath.split('.');
-      let obj: any = updatedBalanceSheet;
-      for (let i = 0; i < keys.length - 1; i++) {
-        obj[keys[i]] = { ...obj[keys[i]] };
-        obj = obj[keys[i]];
-      }
-      const finalKey = keys[keys.length - 1];
-      if (obj[finalKey]) {
-        obj[finalKey] = { ...obj[finalKey], current: totalCurrent, previous: totalPrevious };
-      }
+    if (!bsPath) {
+      // If no path, just update the share capital details
+      updateCompany(company.id, {
+        shareCapitalDetails: { ...(company.shareCapitalDetails || {}), [noteId]: data },
+      });
+      return;
     }
     
+    // Deep clone the balance sheet to avoid mutation
+    const updatedBalanceSheet = JSON.parse(JSON.stringify(company.balanceSheet));
+    const keys = bsPath.split('.');
+    let obj: any = updatedBalanceSheet;
+    
+    // Navigate to the parent object
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!obj[keys[i]]) {
+        obj[keys[i]] = {};
+      }
+      obj = obj[keys[i]];
+    }
+    
+    // Update the final value
+    const finalKey = keys[keys.length - 1];
+    obj[finalKey] = { 
+      ...(obj[finalKey] || {}), 
+      current: totalCurrent, 
+      previous: totalPrevious 
+    };
+    
+    // Update company with both share capital details and balance sheet
     updateCompany(company.id, {
       shareCapitalDetails: { ...(company.shareCapitalDetails || {}), [noteId]: data },
       balanceSheet: updatedBalanceSheet,
@@ -504,6 +560,11 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
             noteContent = removeTablesFromContent(noteContent);
           }
 
+          // In report mode, remove duplicate heading from content since header already shows it
+          if (isReportMode) {
+            noteContent = removeHeadingFromContent(noteContent, title);
+          }
+
           const breakdownItems =
             company.breakdowns?.[originalNote] || getDefaultBreakdownItems(originalNote);
 
@@ -672,6 +733,15 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
             </div>
           );
         })}
+      </div>
+
+      {/* Cash Flow Explanation */}
+      <div className="mt-8 pt-6 border-t border-slate-300 print:mt-6 print:pt-4">
+        <div className="prose prose-sm prose-slate max-w-none leading-relaxed">
+          <p className="text-sm text-slate-700 print:text-xs">
+            <strong>Cash Flow Statement:</strong> The cash flow statement presents the movement in cash and cash equivalents during the reporting period, classified into operating, investing, and financing activities. Operating activities represent the principal revenue-producing activities of the Company and other activities that are not investing or financing activities. Investing activities are the acquisition and disposal of long-term assets and other investments not included in cash equivalents. Financing activities are activities that result in changes in the size and composition of the equity capital and borrowings of the Company.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -36,12 +36,20 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
 
   const renderNoteTd = (note?: string) => {
     const resolvedNote = note ? noteIndex.map[note] : undefined;
+    const isReportMode = modeOverride === 'report';
     return (
       <td className="border p-2 text-right">
         {resolvedNote ? (
-          <button type="button" onClick={() => handleNoteClick(resolvedNote)} className="text-blue-600 underline hover:text-blue-800">
-            {resolvedNote}
-          </button>
+          isReportMode ? (
+            <span className="text-gray-700 font-medium print:text-gray-900">{resolvedNote}</span>
+          ) : (
+            <>
+              <button type="button" onClick={() => handleNoteClick(resolvedNote)} className="text-blue-600 underline hover:text-blue-800 print:hidden">
+                {resolvedNote}
+              </button>
+              <span className="hidden print:inline text-gray-700 font-medium">{resolvedNote}</span>
+            </>
+          )
         ) : (
           <span className="text-gray-400">-</span>
         )}
@@ -59,14 +67,18 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
           <div className="flex items-center justify-end gap-2">
             <span className="font-medium">{formatValue(currentValue)}</span>
             {resolvedNote && (
-              <button
-                type="button"
-                onClick={() => handleNoteClick(resolvedNote)}
-                className="text-xs text-blue-600 hover:text-blue-800"
-                title="View Note Details"
-              >
-                📊
-              </button>
+              effectiveViewMode === 'report' ? (
+                <span className="text-xs text-gray-700 font-medium print:inline">{resolvedNote}</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleNoteClick(resolvedNote)}
+                  className="text-xs text-blue-600 hover:text-blue-800 print:hidden"
+                  title="View Note Details"
+                >
+                  📊
+                </button>
+              )
             )}
           </div>
         </td>

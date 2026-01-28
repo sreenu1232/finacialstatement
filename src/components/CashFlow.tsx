@@ -179,9 +179,8 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
   ) => (
     <tr>
       <td className={`border p-2 ${labelClassName}`}>{label}</td>
-      {renderNoteCell(note)}
       {isEditable
-        ? renderInputField(currentValue, previousValue, path)
+        ? renderInputField(currentValue, previousValue, path, note)
         : renderDisplayField(currentValue, previousValue)}
     </tr>
   );
@@ -224,7 +223,6 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
           <thead className={theadClassName}>
             <tr>
               <th className="border p-2 text-left">Particulars</th>
-              <th className="border p-2 text-right">Note No.</th>
               <th className="border p-2 text-right">
                 {company.yearEnd}
                 <br />
@@ -243,7 +241,7 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
           </thead>
           <tbody>
             <tr className="bg-blue-50 font-semibold">
-              <td className="border p-2" colSpan={4}>
+              <td className="border p-2" colSpan={3}>
                 A. Cash Flow from Operating Activities
               </td>
             </tr>
@@ -257,7 +255,7 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
             )}
 
             <tr className="bg-gray-50 font-semibold">
-              <td className="border p-2 pl-4" colSpan={4}>
+              <td className="border p-2 pl-4" colSpan={3}>
                 Adjustments for:
               </td>
             </tr>
@@ -297,13 +295,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
             <tr className="font-semibold bg-blue-100">
               <td className="border p-2 pl-8">Total adjustments</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.adjustmentsCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.adjustmentsPrevious)}</td>
             </tr>
 
             <tr className="bg-gray-50 font-semibold">
-              <td className="border p-2 pl-4" colSpan={4}>
+              <td className="border p-2 pl-4" colSpan={3}>
                 Changes in working capital:
               </td>
             </tr>
@@ -343,14 +340,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
             <tr className="font-semibold bg-blue-100">
               <td className="border p-2 pl-8">Total changes in working capital</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.workingCapitalCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.workingCapitalPrevious)}</td>
             </tr>
 
             <tr className="font-semibold bg-green-50">
               <td className="border p-2">Cash generated from operations</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.cashGeneratedFromOperationsCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.cashGeneratedFromOperationsPrevious)}</td>
             </tr>
@@ -365,13 +360,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
             <tr className="font-bold bg-green-100">
               <td className="border p-2">Net cash from operating activities (A)</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.netCashFromOperatingActivitiesCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.netCashFromOperatingActivitiesPrevious)}</td>
             </tr>
 
             <tr className="bg-blue-50 font-semibold">
-              <td className="border p-2" colSpan={4}>
+              <td className="border p-2" colSpan={3}>
                 B. Cash Flow from Investing Activities
               </td>
             </tr>
@@ -414,13 +408,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
             <tr className="font-bold bg-green-100">
               <td className="border p-2">Net cash (used in)/from investing activities (B)</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.netCashFromInvestingActivitiesCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.netCashFromInvestingActivitiesPrevious)}</td>
             </tr>
 
             <tr className="bg-blue-50 font-semibold">
-              <td className="border p-2" colSpan={4}>
+              <td className="border p-2" colSpan={3}>
                 C. Cash Flow from Financing Activities
               </td>
             </tr>
@@ -470,14 +463,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
             <tr className="font-bold bg-green-100">
               <td className="border p-2">Net cash from/(used in) financing activities (C)</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.netCashFromFinancingActivitiesCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.netCashFromFinancingActivitiesPrevious)}</td>
             </tr>
 
             <tr className="font-bold bg-orange-100">
               <td className="border p-2">Net increase/(decrease) in cash and cash equivalents (A+B+C)</td>
-              <td className="border p-2"></td>
               <td className="border p-2 text-right">{formatValue(totals.netIncreaseInCashCurrent)}</td>
               <td className="border p-2 text-right">{formatValue(totals.netIncreaseInCashPrevious)}</td>
             </tr>
@@ -500,14 +491,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
                     </div>
                   )}
               </td>
-              <td className="border p-2 text-right">
-                {company.cashFlow.cashAndCashEquivalentsAtEnd.note || '-'}
-              </td>
               {isEditable
                 ? renderInputField(
                   company.cashFlow.cashAndCashEquivalentsAtEnd.current,
                   company.cashFlow.cashAndCashEquivalentsAtEnd.previous,
-                  'cashAndCashEquivalentsAtEnd'
+                  'cashAndCashEquivalentsAtEnd',
+                  company.cashFlow.cashAndCashEquivalentsAtEnd.note
                 )
                 : renderDisplayField(
                   company.cashFlow.cashAndCashEquivalentsAtEnd.current,

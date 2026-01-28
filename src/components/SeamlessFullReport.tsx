@@ -128,56 +128,186 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           background: white !important;
         }
         
-        /* Cover page styles */
-        .cover-page {
-          page-break-after: always;
-          min-height: 100vh;
-          display: flex !important;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%) !important;
-          color: white !important;
-          text-align: center;
-          padding: 40mm 20mm;
+        /* Professional Cover Page with Company Details - Combined on first page */
+        .professional-cover-page {
+          page-break-after: always !important;
+          break-after: page !important;
+          display: block !important;
+          background: white !important;
+          padding: 0 !important;
+          height: auto !important;
         }
         
-        .cover-page h1 {
+        /* Header Section with Professional Gradient */
+        .cover-header-section {
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%) !important;
+          padding: 35mm 20mm 25mm 20mm !important;
+          text-align: center !important;
+          color: white !important;
+          page-break-inside: avoid !important;
+        }
+        
+        .cover-header-content {
+          max-width: 180mm !important;
+          margin: 0 auto !important;
+        }
+        
+        .cover-logo-container {
+          margin-bottom: 12mm !important;
+        }
+        
+        .cover-logo {
+          max-height: 35mm !important;
+          max-width: 120mm !important;
+          object-fit: contain !important;
+          filter: brightness(0) invert(1) !important;
+        }
+        
+        .cover-company-name {
           font-size: 32pt !important;
-          font-weight: bold !important;
-          margin-bottom: 10mm !important;
+          font-weight: 700 !important;
+          margin: 0 0 8mm 0 !important;
+          letter-spacing: 0.5pt !important;
           color: white !important;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
         }
         
-        .cover-page p {
+        .cover-title-section {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 12pt !important;
+          margin: 10mm 0 !important;
+        }
+        
+        .cover-title-line {
+          flex: 1 !important;
+          height: 2pt !important;
+          background: rgba(255,255,255,0.6) !important;
+          max-width: 40mm !important;
+        }
+        
+        .cover-title-text {
           font-size: 14pt !important;
-          color: rgba(255,255,255,0.9) !important;
+          font-weight: 600 !important;
+          letter-spacing: 2pt !important;
+          color: white !important;
+          text-transform: uppercase !important;
+          margin: 0 !important;
+        }
+        
+        .cover-year-text {
+          font-size: 16pt !important;
+          font-weight: 500 !important;
+          color: rgba(255,255,255,0.95) !important;
+          margin: 8mm 0 0 0 !important;
+        }
+        
+        /* Company Details Section */
+        .cover-details-section {
+          background: #f8fafc !important;
+          padding: 20mm 20mm 25mm 20mm !important;
+          page-break-inside: avoid !important;
+        }
+        
+        .cover-details-content {
+          max-width: 180mm !important;
+          margin: 0 auto !important;
+        }
+        
+        .cover-details-row {
+          display: flex !important;
+          margin-bottom: 6mm !important;
+          padding-bottom: 5mm !important;
+          border-bottom: 1pt solid #e2e8f0 !important;
+        }
+        
+        .cover-details-row:last-child {
+          border-bottom: none !important;
+          margin-bottom: 0 !important;
+        }
+        
+        .cover-detail-label {
+          font-size: 11pt !important;
+          font-weight: 600 !important;
+          color: #475569 !important;
+          min-width: 45mm !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.3pt !important;
+        }
+        
+        .cover-detail-value {
+          font-size: 11pt !important;
+          color: #1e293b !important;
+          font-weight: 400 !important;
+          flex: 1 !important;
+        }
+        
+        .cover-details-grid {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr !important;
+          gap: 8mm !important;
+          margin: 8mm 0 10mm 0 !important;
+        }
+        
+        .cover-detail-box {
+          background: white !important;
+          border: 1.5pt solid #cbd5e1 !important;
+          border-radius: 4pt !important;
+          padding: 6mm 5mm !important;
+          box-shadow: 0 2pt 4pt rgba(0,0,0,0.05) !important;
+        }
+        
+        .cover-detail-box-label {
+          font-size: 9pt !important;
+          font-weight: 600 !important;
+          color: #64748b !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.5pt !important;
+          margin-bottom: 3mm !important;
+        }
+        
+        .cover-detail-box-value {
+          font-size: 10pt !important;
+          color: #1e293b !important;
+          font-weight: 500 !important;
+          word-break: break-all !important;
         }
 
-        /* Section headers */
+        /* Professional Balance Sheet styling - Starts immediately after cover page */
+        .professional-balance-sheet {
+          page-break-before: auto !important;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+        }
+
+        /* Section headers - Professional styling */
         .section-header {
           display: block !important;
-          background: #f8fafc !important;
-          border-left: 4px solid #2563eb !important;
-          padding: 12pt 16pt !important;
-          margin-bottom: 16pt !important;
-          page-break-after: avoid;
-          page-break-inside: avoid;
+          background: white !important;
+          border-bottom: 2pt solid #1e293b !important;
+          padding: 16pt 0 8pt 0 !important;
+          margin-bottom: 20pt !important;
+          page-break-after: avoid !important;
+          page-break-inside: avoid !important;
         }
 
         .section-header .section-title {
-          font-size: 16pt !important;
+          font-size: 18pt !important;
           font-weight: bold !important;
           color: #1e293b !important;
           margin: 0 0 4pt 0 !important;
           text-transform: uppercase;
-          letter-spacing: 0.5pt;
+          letter-spacing: 1pt;
+          text-align: center !important;
         }
 
         .section-header .section-subtitle {
-          font-size: 10pt !important;
-          color: #64748b !important;
+          font-size: 11pt !important;
+          color: #475569 !important;
           margin: 0 !important;
+          text-align: center !important;
+          font-weight: 500 !important;
         }
 
         /* Section spacing */
@@ -188,6 +318,12 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
         
         .page-break-after {
           page-break-after: always !important;
+          break-after: page !important;
+        }
+
+        .page-break-before {
+          page-break-before: always !important;
+          break-before: page !important;
         }
 
         /* Tables */
@@ -339,26 +475,71 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
         className={`bg-white shadow-2xl print:shadow-none print:w-full print:max-w-none mx-auto transition-all duration-300 rounded-2xl print:rounded-none overflow-hidden ${paperClass}`}
         style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}
       >
-        {/* Cover Page - Only visible in print */}
-        <div className="cover-page hidden print:flex print:flex-col print:justify-center print:items-center">
-          {logo && (
-            <img
-              src={logo}
-              alt={`${company.name} Logo`}
-              className="max-w-[200px] max-h-[100px] mb-8 object-contain"
-              style={{ filter: 'brightness(0) invert(1)' }}
-            />
-          )}
-          <h1 className="text-4xl font-bold mb-4 text-white">{company.name}</h1>
-          <p className="text-2xl mb-8 text-white opacity-90">Financial Statements</p>
-          <div className="text-center space-y-2 text-white">
-            <p className="text-lg">For the year ended {company.yearEnd}</p>
-            <p className="text-sm opacity-80">{company.financialYear}</p>
+        {/* Cover Page with Company Details - Combined on first page, only visible in print */}
+        <div className="hidden print:block professional-cover-page">
+          {/* Professional Header Section with Gradient */}
+          <div className="cover-header-section">
+            <div className="cover-header-content">
+              {logo && (
+                <div className="cover-logo-container">
+                  <img
+                    src={logo}
+                    alt={`${company.name} Logo`}
+                    className="cover-logo"
+                  />
+                </div>
+              )}
+              
+              <h1 className="cover-company-name" style={{ color: primaryColor }}>
+                {company.name}
+              </h1>
+              
+              <div className="cover-title-section">
+                <div className="cover-title-line"></div>
+                <p className="cover-title-text">FINANCIAL STATEMENTS</p>
+                <div className="cover-title-line"></div>
+              </div>
+              
+              <p className="cover-year-text">
+                For the year ended {company.yearEnd}
+              </p>
+            </div>
+          </div>
+          
+          {/* Company Details Section */}
+          <div className="cover-details-section">
+            <div className="cover-details-content">
+              <div className="cover-details-row">
+                <div className="cover-detail-label">Registered Office:</div>
+                <div className="cover-detail-value">{company.address}</div>
+              </div>
+              
+              <div className="cover-details-grid">
+                <div className="cover-detail-box">
+                  <div className="cover-detail-box-label">CIN</div>
+                  <div className="cover-detail-box-value">{company.cin}</div>
+                </div>
+                <div className="cover-detail-box">
+                  <div className="cover-detail-box-label">PAN</div>
+                  <div className="cover-detail-box-value">{company.pan}</div>
+                </div>
+              </div>
+              
+              <div className="cover-details-row">
+                <div className="cover-detail-label">Sector:</div>
+                <div className="cover-detail-value">{company.sector} - {company.specifications}</div>
+              </div>
+              
+              <div className="cover-details-row">
+                <div className="cover-detail-label">Financial Year:</div>
+                <div className="cover-detail-value">{company.financialYear}</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Screen Header - Only visible on screen */}
-        <section className="text-center space-y-8 bg-gradient-to-r from-gray-50 to-white py-12 px-8 print:hidden no-print">
+        {/* Screen Header - Only visible on screen - Completely hidden in print */}
+        <section className="text-center space-y-8 bg-gradient-to-r from-gray-50 to-white py-12 px-8 print:hidden no-print" style={{ display: 'none' }}>
           {logo && (
             <div className="flex justify-center mb-6">
               <img
@@ -388,13 +569,13 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           </div>
         </section>
 
-        {/* Balance Sheet Section */}
-        <section className="page-break-after">
+        {/* Balance Sheet Section - Starts on page 2 */}
+        <section className="professional-balance-sheet">
           <div className="section-header hidden print:block">
             <h3 className="section-title">Balance Sheet</h3>
             <p className="section-subtitle">As at {company.yearEnd}</p>
           </div>
-          <div className="px-8 print:px-4">
+          <div className="px-8 print:px-0">
             <BalanceSheet company={company} modeOverride="report" />
           </div>
         </section>

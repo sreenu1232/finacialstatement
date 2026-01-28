@@ -86,31 +86,7 @@ export const getFinancialPath = (noteId: string): string | undefined => {
     '67': 'earningsPerShareDiscontinued.diluted',
     '68': 'earningsPerShareTotal.basic',
     '69': 'earningsPerShareTotal.diluted',
-
-    // Cash Flow
-    '70': 'operatingActivities.profitBeforeTax',
-    '71': 'operatingActivities.adjustments.depreciationAndAmortisation',
-    '72': 'operatingActivities.adjustments.financeCosts',
-    '73': 'operatingActivities.adjustments.interestIncome',
-    '74': 'operatingActivities.adjustments.otherAdjustments',
-    '75': 'operatingActivities.changesInWorkingCapital.tradeReceivables',
-    '76': 'operatingActivities.changesInWorkingCapital.inventories',
-    '77': 'operatingActivities.changesInWorkingCapital.tradePayables',
-    '78': 'operatingActivities.changesInWorkingCapital.otherWorkingCapitalChanges',
-    '79': 'operatingActivities.incomeTaxesPaid',
-    '80': 'investingActivities.purchaseOfPropertyPlantAndEquipment',
-    '81': 'investingActivities.proceedsFromSaleOfPropertyPlantAndEquipment',
-    '82': 'investingActivities.purchaseOfInvestments',
-    '83': 'investingActivities.proceedsFromInvestments',
-    '84': 'investingActivities.otherInvestingCashFlows',
-    '85': 'financingActivities.proceedsFromShareCapital',
-    '86': 'financingActivities.proceedsFromBorrowings',
-    '87': 'financingActivities.repaymentOfBorrowings',
-    '88': 'financingActivities.dividendsPaid',
-    '89': 'financingActivities.interestPaid',
-    '90': 'financingActivities.otherFinancingCashFlows',
-    '91': 'cashAndCashEquivalentsAtBeginning',
-    '92': 'cashAndCashEquivalentsAtEnd'
+    // Cash Flow notes removed (previously notes 70-92)
   };
   return mapping[noteId];
 };
@@ -212,32 +188,7 @@ export const buildNoteIndex = (company: Company): NoteIndex => {
     { note: '69', title: 'EPS (Total) - Diluted', hasValue: true }
   );
 
-  // Cash Flow Statement
-  notes.push(
-    { note: '70', title: 'Cash Flow - Profit before tax', hasValue: true },
-    { note: '71', title: 'Cash Flow - Adjustments: Depreciation and amortisation', hasValue: true },
-    { note: '72', title: 'Cash Flow - Adjustments: Finance costs', hasValue: true },
-    { note: '73', title: 'Cash Flow - Adjustments: Interest income', hasValue: true },
-    { note: '74', title: 'Cash Flow - Adjustments: Other adjustments', hasValue: true },
-    { note: '75', title: 'Cash Flow - Changes in working capital: Trade receivables', hasValue: true },
-    { note: '76', title: 'Cash Flow - Changes in working capital: Inventories', hasValue: true },
-    { note: '77', title: 'Cash Flow - Changes in working capital: Trade payables', hasValue: true },
-    { note: '78', title: 'Cash Flow - Changes in working capital: Other assets / liabilities', hasValue: true },
-    { note: '79', title: 'Cash Flow - Income taxes paid', hasValue: true },
-    { note: '80', title: 'Cash Flow - Purchase of property, plant and equipment', hasValue: true },
-    { note: '81', title: 'Cash Flow - Proceeds from sale of property, plant and equipment', hasValue: true },
-    { note: '82', title: 'Cash Flow - Purchase of investments', hasValue: true },
-    { note: '83', title: 'Cash Flow - Proceeds from investments', hasValue: true },
-    { note: '84', title: 'Cash Flow - Other investing cash flows', hasValue: true },
-    { note: '85', title: 'Cash Flow - Proceeds from issue of share capital', hasValue: true },
-    { note: '86', title: 'Cash Flow - Proceeds from borrowings', hasValue: true },
-    { note: '87', title: 'Cash Flow - Repayment of borrowings', hasValue: true },
-    { note: '88', title: 'Cash Flow - Dividends paid', hasValue: true },
-    { note: '89', title: 'Cash Flow - Interest paid', hasValue: true },
-    { note: '90', title: 'Cash Flow - Other financing cash flows', hasValue: true },
-    { note: '91', title: 'Cash Flow - Cash and cash equivalents at the beginning of the year', hasValue: true },
-    { note: '92', title: 'Cash Flow - Cash and cash equivalents at the end of the year', hasValue: true }
-  );
+  // Cash Flow Statement - All cash flow notes removed (previously notes 70-92)
 
   // Static Notes
   notes.unshift(
