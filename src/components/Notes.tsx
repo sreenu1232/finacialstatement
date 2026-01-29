@@ -5,6 +5,7 @@ import { useApp } from '../context/AppContext';
 import { getNoteTemplate } from '../utils/NoteTemplates';
 import BreakdownTable from './BreakdownTable';
 import PPEBreakdownTable from './PPEBreakdownTable';
+import EPSBreakdownTable from './EPSBreakdownTable';
 import ShareCapitalBreakdown from './ShareCapitalBreakdown';
 import BorrowingsBreakdown from './BorrowingsBreakdown';
 import TradePayablesBreakdown from './TradePayablesBreakdown';
@@ -25,6 +26,7 @@ const TRADE_PAYABLES_MSME_NOTE_ID = '26';
 const TRADE_PAYABLES_OTHERS_NOTE_ID = '27';
 const CURRENT_TRADE_PAYABLES_MSME_NOTE_ID = '34';
 const CURRENT_TRADE_PAYABLES_OTHERS_NOTE_ID = '35';
+const EPS_NOTES = ['64', '65', '66', '67', '68', '69']; // EPS notes
 
 // Notes that should NOT show any pre-built HTML tables inside the editor
 // PPE and Share Capital have their own specialized breakdown components
@@ -159,6 +161,23 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
   };
 
   const getDefaultBreakdownItems = (noteId: string): BreakdownItem[] => {
+    // For EPS notes, only ABC Limited gets pre-filled values, others get 0
+    if (EPS_NOTES.includes(noteId)) {
+      // Only ABC Limited gets the default values (19200000/4000000 = 4.8)
+      if (company.name === 'ABC Limited') {
+        return [
+          { id: 'net-profit', description: 'Net profit', current: 19200000, previous: 0 },
+          { id: 'equity-shares', description: 'No.of Equity Shares', current: 4000000, previous: 0 }
+        ];
+      } else {
+        // All other companies (including new ones) get 0 values
+        return [
+          { id: 'net-profit', description: 'Net profit', current: 0, previous: 0 },
+          { id: 'equity-shares', description: 'No.of Equity Shares', current: 0, previous: 0 }
+        ];
+      }
+    }
+
     if (calculatedPLNotes[noteId]) {
       const { current, previous } = calculatedPLNotes[noteId];
       return [{ id: `default-${noteId}`, description: 'Total', current, previous }];
@@ -219,24 +238,57 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
         bsPath.startsWith('currentLiabilities');
 
       const rootKey = isBalanceSheetPath ? 'balanceSheet' : 'profitLoss';
+      
+      // Create a proper deep copy by recursively copying nested objects
       const rootObj: any = { ...(updatedCompany as any)[rootKey] };
-      let obj = rootObj;
-
+      
+      // Build the nested path with proper copying
+      const path: any[] = [rootObj];
+      let current = rootObj;
+      
       for (let i = 0; i < keys.length - 1; i += 1) {
         const k = keys[i];
-        obj[k] = obj[k] ? { ...obj[k] } : {};
-        obj = obj[k];
+        if (!current[k]) {
+          current[k] = {};
+        } else {
+          current[k] = { ...current[k] };
+        }
+        current = current[k];
+        path.push(current);
       }
 
       const finalKey = keys[keys.length - 1];
-      if (obj[finalKey]) {
-        obj[finalKey] = { ...obj[finalKey], current: totalCurrent, previous: totalPrevious };
-      }
+      // Preserve existing note field if it exists, update current and previous values
+      const existingNote = current[finalKey]?.note || noteId;
+      current[finalKey] = { 
+        ...(current[finalKey] || {}), 
+        current: totalCurrent, 
+        previous: totalPrevious,
+        note: existingNote
+      };
 
+      // Update the company with the modified root object
       (updatedCompany as any)[rootKey] = rootObj;
     }
 
-    updateCompany(company.id, updatedCompany);
+    // Only update the changed properties to ensure React detects the change
+    const updatePayload: Partial<Company> = {
+      breakdowns: updatedCompany.breakdowns
+    };
+    
+    if (!calculatedNotes.includes(noteId) && bsPath) {
+      const isBalanceSheetPath =
+        bsPath.startsWith('nonCurrentAssets') ||
+        bsPath.startsWith('currentAssets') ||
+        bsPath.startsWith('equity') ||
+        bsPath.startsWith('nonCurrentLiabilities') ||
+        bsPath.startsWith('currentLiabilities');
+      
+      const rootKey = isBalanceSheetPath ? 'balanceSheet' : 'profitLoss';
+      (updatePayload as any)[rootKey] = (updatedCompany as any)[rootKey];
+    }
+    
+    updateCompany(company.id, updatePayload);
   };
 
   const handlePPEBreakdownUpdate = (
@@ -572,6 +624,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
           const isShareCapitalNote = originalNote === SHARE_CAPITAL_NOTE_ID;
           const isBorrowingsNote = originalNote === BORROWINGS_NOTE_ID || originalNote === CURRENT_BORROWINGS_NOTE_ID;
           const isTradePayablesNote = originalNote === TRADE_PAYABLES_MSME_NOTE_ID || originalNote === TRADE_PAYABLES_OTHERS_NOTE_ID || originalNote === CURRENT_TRADE_PAYABLES_MSME_NOTE_ID || originalNote === CURRENT_TRADE_PAYABLES_OTHERS_NOTE_ID;
+          const isEPSNote = EPS_NOTES.includes(originalNote);
 
           const ppeTable = isPPENote ? (
             <PPEBreakdownTable
@@ -639,7 +692,18 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
             />
           ) : null;
 
-          const defaultTable = (!isPPENote && !isShareCapitalNote && !isBorrowingsNote && !isTradePayablesNote && bsPath) ? (
+          const epsTable = isEPSNote ? (
+            <EPSBreakdownTable
+              items={breakdownItems}
+              onUpdate={(items, totalCurrent, totalPrevious) =>
+                handleBreakdownUpdate(originalNote, bsPath || '', items, totalCurrent, totalPrevious)
+              }
+              isEditable={isEditable}
+              company={company}
+            />
+          ) : null;
+
+          const defaultTable = (!isPPENote && !isShareCapitalNote && !isBorrowingsNote && !isTradePayablesNote && !isEPSNote && bsPath) ? (
             <BreakdownTable
               items={breakdownItems}
               onUpdate={(items, totalCurrent, totalPrevious) =>
@@ -704,12 +768,13 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
                         placeholder="Enter note content..."
                         minHeight={120}
                       >
-                        {ppeTable || shareCapitalTable || borrowingsTable || tradePayablesTable || defaultTable ? (
+                        {ppeTable || shareCapitalTable || borrowingsTable || tradePayablesTable || epsTable || defaultTable ? (
                           <div className="space-y-4">
                             {ppeTable}
                             {shareCapitalTable}
                             {borrowingsTable}
                             {tradePayablesTable}
+                            {epsTable}
                             {defaultTable}
                           </div>
                         ) : null}
@@ -724,6 +789,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
                         {shareCapitalTable}
                         {borrowingsTable}
                         {tradePayablesTable}
+                        {epsTable}
                         {defaultTable}
                       </div>
                     )}

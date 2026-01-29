@@ -623,22 +623,12 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
               }
             </tr>
 
-            {/* XV. Total Comprehensive Income for the period (XIII+XIV) */}
+            {/* XV. Total Comprehensive Income for the period (XIII+XIV) - Auto calculated */}
             <tr className={`font-bold ${accentStrongRowClass}`}>
               <td className="border p-2">XV. Total Comprehensive Income for the period (XIII+XIV)</td>
               {renderNoteTd(company.profitLoss.totalComprehensiveIncomeForThePeriod.note)}
-              {isEditable ?
-                renderInputField(
-                  company.profitLoss.totalComprehensiveIncomeForThePeriod.current,
-                  company.profitLoss.totalComprehensiveIncomeForThePeriod.previous,
-                  'totalComprehensiveIncomeForThePeriod',
-                  company.profitLoss.totalComprehensiveIncomeForThePeriod.note
-                ) :
-                renderDisplayField(
-                  company.profitLoss.totalComprehensiveIncomeForThePeriod.current,
-                  company.profitLoss.totalComprehensiveIncomeForThePeriod.previous
-                )
-              }
+              <td className="border p-2 text-right">{formatValue(totals.totalComprehensiveIncome)}</td>
+              <td className="border p-2 text-right">{formatValue(totals.totalComprehensiveIncomePrev)}</td>
             </tr>
 
             {/* XVI. Earnings per equity share (for continuing operation) */}

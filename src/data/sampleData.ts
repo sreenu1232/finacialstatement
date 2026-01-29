@@ -132,7 +132,7 @@ export const sampleCompanies: Company[] = [
       },
       // XVII. Earnings per equity share (for discontinued operation)
       earningsPerShareDiscontinued: {
-        basic: { current: 0, previous: 0, note: '66' },
+        basic: { current: 4.8, previous: 0, note: '66' },
         diluted: { current: 0, previous: 0, note: '67' }
       },
       // XVIII. Earning per equity share (for discontinued & continuing operation)
@@ -213,7 +213,12 @@ export const sampleCompanies: Company[] = [
       }
     },
     noteDetails: {},
-    breakdowns: {},
+    breakdowns: {
+      '66': [
+        { id: 'net-profit', description: 'Net profit', current: 19200000, previous: 0 },
+        { id: 'equity-shares', description: 'No.of Equity Shares', current: 4000000, previous: 0 }
+      ]
+    },
     ppeBreakdowns: {
       '1': [
         { id: '1', description: 'Land', grossBlock: 30000000, depreciation: 10000000 },
