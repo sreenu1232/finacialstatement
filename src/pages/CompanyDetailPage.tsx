@@ -1,8 +1,9 @@
 import React from 'react';
-import { ArrowLeft, LogOut, Eye, Edit3, FileSpreadsheet, TrendingUp, DollarSign, FileText, BookOpen } from 'lucide-react';
+import { ArrowLeft, LogOut, Eye, Edit3, FileSpreadsheet, TrendingUp, DollarSign, FileText, BookOpen, GitCompare } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import BalanceSheet from '../components/BalanceSheet';
 import ProfitLoss from '../components/ProfitLoss';
+import ChangesInEquity from '../components/ChangesInEquity';
 import CashFlow from '../components/CashFlow';
 import Notes from '../components/Notes';
 import SeamlessFullReport from '../components/SeamlessFullReport';
@@ -23,12 +24,13 @@ const CompanyDetailPage: React.FC = () => {
   const tabs = [
     { key: 'balance-sheet', label: 'Balance Sheet', icon: FileSpreadsheet },
     { key: 'profit-loss', label: 'Profit & Loss', icon: TrendingUp },
+    { key: 'changes-in-equity', label: 'Changes in Equity', icon: GitCompare },
     { key: 'cash-flow', label: 'Cash Flow', icon: DollarSign },
     { key: 'notes', label: 'Notes', icon: FileText },
     { key: 'full-report', label: 'Full Report', icon: BookOpen }
   ];
 
-  const showPreviewToggle = activeTab === 'balance-sheet' || activeTab === 'profit-loss' || activeTab === 'full-report';
+  const showPreviewToggle = activeTab === 'balance-sheet' || activeTab === 'profit-loss' || activeTab === 'changes-in-equity' || activeTab === 'full-report';
 
   return (
     <div className="h-screen bg-slate-50 flex overflow-hidden print:h-auto print:overflow-visible print:bg-white print:block">
@@ -137,6 +139,7 @@ const CompanyDetailPage: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print:shadow-none print:border-0 print:rounded-none">
                 {activeTab === 'balance-sheet' && <BalanceSheet company={company} />}
                 {activeTab === 'profit-loss' && <ProfitLoss company={company} />}
+                {activeTab === 'changes-in-equity' && <ChangesInEquity company={company} />}
                 {activeTab === 'cash-flow' && <CashFlow company={company} />}
                 {activeTab === 'notes' && <Notes company={company} />}
               </div>

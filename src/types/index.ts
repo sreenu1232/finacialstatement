@@ -1,6 +1,6 @@
 export type ViewType = 'dashboard' | 'add-company' | 'company-detail';
 
-export type TabType = 'balance-sheet' | 'profit-loss' | 'cash-flow' | 'notes' | 'full-report';
+export type TabType = 'balance-sheet' | 'profit-loss' | 'changes-in-equity' | 'cash-flow' | 'notes' | 'full-report';
 
 export type ViewMode = 'edit' | 'preview' | 'report';
 
