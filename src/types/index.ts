@@ -358,6 +358,30 @@ export interface TradePayablesData {
   disclosures: string;
 }
 
+export interface AmountPair {
+  current: number;
+  previous: number;
+}
+
+export interface ChangesInEquityOtherEquityRowInput {
+  beginning: AmountPair;
+  accountingPolicyOrPriorPeriodErrors: AmountPair;
+  totalComprehensiveIncomeForYear: AmountPair;
+  dividends: AmountPair; // enter positive number; UI will show it in brackets
+  transferToRetainedEarnings: AmountPair;
+  otherChange: AmountPair;
+}
+
+export interface ChangesInEquityData {
+  equityShareCapital: {
+    opening: AmountPair;
+    changes: AmountPair; // movement during the year
+  };
+  otherEquity: {
+    rows: Record<string, ChangesInEquityOtherEquityRowInput>;
+  };
+}
+
 export interface Company {
   id: number;
   name: string;
@@ -372,6 +396,7 @@ export interface Company {
   balanceSheet: BalanceSheetData;
   profitLoss: ProfitLossData;
   cashFlow: CashFlowData;
+  changesInEquity?: ChangesInEquityData;
   noteDetails: Record<string, string>;
   breakdowns: Record<string, BreakdownItem[]>;
   ppeBreakdowns?: Record<string, PPEBreakdownItem[]>;

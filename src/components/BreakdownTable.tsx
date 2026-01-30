@@ -12,7 +12,7 @@ interface BreakdownTableProps {
 
 const BreakdownTable: React.FC<BreakdownTableProps> = ({ items, onUpdate, isEditable, company }) => {
     const [localItems, setLocalItems] = useState<BreakdownItem[]>(items || []);
-
+    
     useEffect(() => {
         setLocalItems(items || []);
     }, [items]);

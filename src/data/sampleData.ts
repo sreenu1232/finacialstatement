@@ -176,6 +176,112 @@ export const sampleCompanies: Company[] = [
       cashAndCashEquivalentsAtBeginning: { current: 5000000, previous: 4500000, note: '91' },
       cashAndCashEquivalentsAtEnd: { current: 6200000, previous: 5000000, note: '92' }
     },
+    changesInEquity: {
+      equityShareCapital: {
+        opening: { current: 0, previous: 0 },
+        changes: { current: 0, previous: 0 }
+      },
+      otherEquity: {
+        rows: {
+          equity_component_other_financial_instruments: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          retained_earnings: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          reserves_representing_unrealised_gains_losses: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          debt_instruments_through_oci: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          equity_instruments_through_oci: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          effective_portion_cash_flow_hedges: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          revaluation_surplus: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          remeasurements_net_defined_benefit_plans: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          exchange_differences_foreign_operation: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          others_reserves: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          money_received_against_share_warrants: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
+          others_final: {
+            beginning: { current: 0, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          }
+        }
+      }
+    },
     settings: {
       template: {
         primaryColor: '#2563eb',
