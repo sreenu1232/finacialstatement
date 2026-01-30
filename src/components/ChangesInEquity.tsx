@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Company, ChangesInEquityData, ChangesInEquityOtherEquityRowInput } from '../types';
 import { useApp } from '../context/AppContext';
 import { formatINR, getUnitLabel } from '../utils/formatters';
@@ -15,12 +15,12 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
   const isEditable = effectiveViewMode === 'edit';
   
   const { unitOfMeasurement, decimalPoints, numberStyle, customNumberGrouping, tableDesign, tableAccent, tableDensity, showSignatureBlocks, signatureBlocks } = company.settings.formatting;
-  const { fontStyle, fontSize, primaryColor, secondaryColor } = company.settings.template;
+  const { primaryColor } = company.settings.template;
 
   const formatValue = (value: number) => formatINR(value, unitOfMeasurement, decimalPoints, numberStyle, customNumberGrouping);
   const unitLabel = getUnitLabel(unitOfMeasurement);
 
-  const { tableClassName, theadClassName, accentSoftRowClass, accentStrongRowClass } = getTableDesignClasses(tableDesign, tableAccent, tableDensity);
+  const { tableClassName, theadClassName, accentStrongRowClass } = getTableDesignClasses(tableDesign, tableAccent, tableDensity);
 
   const defaultData: ChangesInEquityData = useMemo(() => ({
     equityShareCapital: {
@@ -179,6 +179,22 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
     | { kind: 'computed'; label: string; compute: (year: 'current' | 'previous') => number; indent?: number }
     | { kind: 'row'; id: string; label: string; includeInTotal: boolean; indent?: number };
 
+  const getRow = useCallback((rowId: string): ChangesInEquityOtherEquityRowInput => {
+    return data.otherEquity.rows[rowId] ?? defaultData.otherEquity.rows[rowId];
+  }, [data, defaultData]);
+
+  const computeOtherEquity = useCallback((row: ChangesInEquityOtherEquityRowInput, year: 'current' | 'previous') => {
+    const beginning = row.beginning[year] || 0;
+    const accounting = row.accountingPolicyOrPriorPeriodErrors[year] || 0;
+    const restatedBeginning = beginning + accounting;
+    const tci = row.totalComprehensiveIncomeForYear[year] || 0;
+    const dividends = row.dividends[year] || 0; // positive input
+    const transfer = row.transferToRetainedEarnings[year] || 0;
+    const other = row.otherChange[year] || 0;
+    const ending = restatedBeginning + tci - dividends + transfer + other;
+    return { beginning, accounting, restatedBeginning, tci, dividends, transfer, other, ending };
+  }, []);
+
   const otherEquityRows: OtherEquityRowConfig[] = useMemo(() => {
     const reserveRowIds = [
       'debt_instruments_through_oci',
@@ -216,23 +232,7 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
       { kind: 'row', id: 'money_received_against_share_warrants', label: '(iv) Money received against share warrants', includeInTotal: true, indent: 1 },
       { kind: 'row', id: 'others_final', label: '(v) Others', includeInTotal: true, indent: 1 }
     ];
-  }, []);
-
-  const getRow = (rowId: string): ChangesInEquityOtherEquityRowInput => {
-    return data.otherEquity.rows[rowId] ?? defaultData.otherEquity.rows[rowId];
-  };
-
-  const computeOtherEquity = (row: ChangesInEquityOtherEquityRowInput, year: 'current' | 'previous') => {
-    const beginning = row.beginning[year] || 0;
-    const accounting = row.accountingPolicyOrPriorPeriodErrors[year] || 0;
-    const restatedBeginning = beginning + accounting;
-    const tci = row.totalComprehensiveIncomeForYear[year] || 0;
-    const dividends = row.dividends[year] || 0; // positive input
-    const transfer = row.transferToRetainedEarnings[year] || 0;
-    const other = row.otherChange[year] || 0;
-    const ending = restatedBeginning + tci - dividends + transfer + other;
-    return { beginning, accounting, restatedBeginning, tci, dividends, transfer, other, ending };
-  };
+  }, [data, getRow, computeOtherEquity]);
 
   const otherEquityTotals = (year: 'current' | 'previous') => {
     return otherEquityRows.reduce((sum, r) => {

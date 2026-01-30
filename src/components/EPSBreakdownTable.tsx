@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { BreakdownItem, Company } from '../types';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatINR } from '../utils/formatters';
@@ -12,7 +12,7 @@ interface EPSBreakdownTableProps {
 
 const EPSBreakdownTable: React.FC<EPSBreakdownTableProps> = ({ items, onUpdate, isEditable, company }) => {
     // Only ABC Limited gets pre-filled values, others get 0
-    const defaultItems: BreakdownItem[] = company.name === 'ABC Limited' 
+    const defaultItems: BreakdownItem[] = useMemo(() => company.name === 'ABC Limited' 
         ? [
             { id: 'net-profit', description: 'Net profit', current: 19200000, previous: 0 },
             { id: 'equity-shares', description: 'No.of Equity Shares', current: 4000000, previous: 0 }
@@ -20,7 +20,7 @@ const EPSBreakdownTable: React.FC<EPSBreakdownTableProps> = ({ items, onUpdate, 
         : [
             { id: 'net-profit', description: 'Net profit', current: 0, previous: 0 },
             { id: 'equity-shares', description: 'No.of Equity Shares', current: 0, previous: 0 }
-          ];
+          ], [company.name]);
     
     const [localItems, setLocalItems] = useState<BreakdownItem[]>(items && items.length > 0 ? items : defaultItems);
     const hasInitialized = useRef(false);
@@ -40,7 +40,7 @@ const EPSBreakdownTable: React.FC<EPSBreakdownTableProps> = ({ items, onUpdate, 
                 hasInitialized.current = true;
             }
         }
-    }, [items, onUpdate]);
+    }, [items, onUpdate, defaultItems]);
 
     const calculateEPS = (currentItems: BreakdownItem[]) => {
         if (!currentItems || currentItems.length === 0) {
