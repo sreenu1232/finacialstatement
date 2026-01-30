@@ -4,6 +4,7 @@ import { Company } from '../types';
 import { useApp } from '../context/AppContext';
 import BalanceSheet from './BalanceSheet';
 import ProfitLoss from './ProfitLoss';
+import ChangesInEquity from './ChangesInEquity';
 import CashFlow from './CashFlow';
 import Notes from './Notes';
 import { runAllValidations, ValidationResult } from '../utils/validationHelpers';
@@ -588,6 +589,17 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           </div>
           <div className="px-8 print:px-4">
             <ProfitLoss company={company} modeOverride="report" />
+          </div>
+        </section>
+
+        {/* Changes in Equity Section */}
+        <section className="page-break-after">
+          <div className="section-header hidden print:block">
+            <h3 className="section-title">Statement of Changes in Equity</h3>
+            <p className="section-subtitle">For the year ended {company.yearEnd}</p>
+          </div>
+          <div className="px-8 print:px-4">
+            <ChangesInEquity company={company} modeOverride="report" />
           </div>
         </section>
 
