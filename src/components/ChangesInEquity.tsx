@@ -232,7 +232,7 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
       { kind: 'row', id: 'money_received_against_share_warrants', label: '(iv) Money received against share warrants', includeInTotal: true, indent: 1 },
       { kind: 'row', id: 'others_final', label: '(v) Others', includeInTotal: true, indent: 1 }
     ];
-  }, [data, getRow, computeOtherEquity]);
+  }, [getRow, computeOtherEquity]);
 
   const otherEquityTotals = (year: 'current' | 'previous') => {
     return otherEquityRows.reduce((sum, r) => {
