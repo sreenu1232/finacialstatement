@@ -192,7 +192,7 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           retained_earnings: {
-            beginning: { current: 11000000, previous: 20000000 },
+            beginning: { current: 11000000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 5500000, previous: 0 },
             dividends: { current: 2000000, previous: 0 },
@@ -200,7 +200,7 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           reserves_representing_unrealised_gains_losses: {
-            beginning: { current: 2000000, previous: 0 },
+            beginning: { current: 0, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
             dividends: { current: 0, previous: 0 },
@@ -337,4 +337,3 @@ export const sampleCompanies: Company[] = [
     }
   }
 ];
-
