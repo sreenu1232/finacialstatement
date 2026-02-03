@@ -220,7 +220,7 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
       { kind: 'row', id: 'exchange_differences_foreign_operation', label: 'Exchange differences on translating the financial statements of a foreign operation', includeInTotal: true, indent: 2 },
       { kind: 'row', id: 'others_reserves', label: 'Others', includeInTotal: true, indent: 2 },
 
-      { kind: 'header', label: '1.2 Other Reserves (to be specified separately)', indent: 1 },
+      { kind: 'row', id: 'reserves_representing_unrealised_gains_losses', label: '1.2 Other Reserves (to be specified separately)', includeInTotal: true, indent: 1 },
 
       { kind: 'computed', label: '(iii) Total Reserves', indent: 1, compute: (year) => {
         return reserveRowIds.reduce((sum, id) => {

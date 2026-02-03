@@ -178,13 +178,13 @@ export const sampleCompanies: Company[] = [
     },
     changesInEquity: {
       equityShareCapital: {
-        opening: { current: 0, previous: 0 },
-        changes: { current: 0, previous: 0 }
+        opening: { current: 8000000, previous: 7500000 },
+        changes: { current: 2000000, previous: 2500000 }
       },
       otherEquity: {
         rows: {
           equity_component_other_financial_instruments: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 3000000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
             dividends: { current: 0, previous: 0 },
@@ -192,15 +192,15 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           retained_earnings: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 11000000, previous: 20000000 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
-            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
-            dividends: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 5500000, previous: 0 },
+            dividends: { current: 2000000, previous: 0 },
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
           },
           reserves_representing_unrealised_gains_losses: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 2000000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
             dividends: { current: 0, previous: 0 },
@@ -208,31 +208,31 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           debt_instruments_through_oci: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 800000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
-            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 200000, previous: 0 },
             dividends: { current: 0, previous: 0 },
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
           },
           equity_instruments_through_oci: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 500000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
-            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 300000, previous: 0 },
             dividends: { current: 0, previous: 0 },
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
           },
           effective_portion_cash_flow_hedges: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 200000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
-            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 100000, previous: 0 },
             dividends: { current: 0, previous: 0 },
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
           },
           revaluation_surplus: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 1200000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
             dividends: { current: 0, previous: 0 },
@@ -240,17 +240,17 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           remeasurements_net_defined_benefit_plans: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: -150000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
-            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: -50000, previous: 0 },
             dividends: { current: 0, previous: 0 },
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
           },
           exchange_differences_foreign_operation: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 350000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
-            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 150000, previous: 0 },
             dividends: { current: 0, previous: 0 },
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
@@ -264,7 +264,7 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           money_received_against_share_warrants: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 1500000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
             dividends: { current: 0, previous: 0 },
@@ -272,7 +272,7 @@ export const sampleCompanies: Company[] = [
             otherChange: { current: 0, previous: 0 }
           },
           others_final: {
-            beginning: { current: 0, previous: 0 },
+            beginning: { current: 400000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
             totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
             dividends: { current: 0, previous: 0 },
@@ -337,3 +337,4 @@ export const sampleCompanies: Company[] = [
     }
   }
 ];
+
