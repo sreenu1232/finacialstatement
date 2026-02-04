@@ -21,7 +21,7 @@ interface MastersSidebarProps {
 
 const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpdate }) => {
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
-    templates: true,
+    templates: false,
     notes: false,
     signatures: false,
     dsc: false,
@@ -240,6 +240,10 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                 <label className="flex items-center gap-2">
                   <input type="checkbox" defaultChecked className="rounded" />
                   <span className="text-sm">Balance Sheet Tables</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" defaultChecked className="rounded" />
+                  <span className="text-sm">Changes in Equity Tables</span>
                 </label>
                 <label className="flex items-center gap-2">
                   <input type="checkbox" defaultChecked className="rounded" />

@@ -7,6 +7,7 @@ import ProfitLoss from './ProfitLoss';
 import ChangesInEquity from './ChangesInEquity';
 import CashFlow from './CashFlow';
 import Notes from './Notes';
+import { getUnitLabel } from '../utils/formatters';
 import { runAllValidations, ValidationResult } from '../utils/validationHelpers';
 import { exportToWord } from '../utils/exportHelpers';
 
@@ -76,6 +77,8 @@ const ValidationDashboard: React.FC<{ company: Company }> = ({ company }) => {
 const SeamlessFullReport: React.FC<Props> = ({ company }) => {
   const { viewMode } = useApp();
   const { fontStyle, fontSize, primaryColor, secondaryColor, logo, paperSize } = company.settings.template;
+  const { unitOfMeasurement } = company.settings.formatting;
+  const unitLabel = getUnitLabel(unitOfMeasurement);
 
   const paperClass = paperSize === 'A4' ? 'w-[210mm] min-h-[297mm] p-[20mm]' : 'w-full max-w-4xl p-8';
 
@@ -102,6 +105,7 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           background: white !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
+          font-size: 9pt !important;
         }
         
         /* Hide all non-print elements */
@@ -327,6 +331,34 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           break-before: page !important;
         }
 
+        /* Statement header */
+        .report-statement-header {
+          margin-bottom: 8pt !important;
+          text-align: center !important;
+        }
+
+        .report-statement-header .report-company {
+          font-size: 9pt !important;
+          font-weight: 600 !important;
+        }
+
+        .report-statement-header .report-title {
+          font-size: 11pt !important;
+          font-weight: 700 !important;
+          margin: 4pt 0 2pt 0 !important;
+        }
+
+        .report-statement-header .report-subtitle {
+          font-size: 9pt !important;
+          margin: 0 !important;
+        }
+
+        .report-statement-header .report-unit-note {
+          font-size: 8pt !important;
+          font-style: italic !important;
+          margin-top: 2pt !important;
+        }
+
         /* Tables */
         table {
           width: 100% !important;
@@ -346,12 +378,60 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
         
         th, td {
           padding: 6pt 8pt !important;
-          border: 0.5pt solid #d1d5db !important;
+          border: 0.5pt solid #000 !important;
           text-align: left;
         }
         
+        .report-signatures {
+          margin-top: 18pt !important;
+          padding-top: 10pt !important;
+          border-top: 1pt solid #000 !important;
+        }
+
+        .report-signatures-grid {
+          display: flex !important;
+          justify-content: space-between !important;
+          gap: 12pt !important;
+          flex-wrap: wrap !important;
+        }
+
+        .report-signature {
+          width: 45% !important;
+          text-align: center !important;
+          margin-top: 16pt !important;
+        }
+
+        .report-signature .line {
+          border-top: 1pt solid #000 !important;
+          margin-bottom: 4pt !important;
+          height: 1pt !important;
+        }
+
+        .report-signature-page {
+          page-break-before: always !important;
+          break-before: page !important;
+          height: 260mm;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: flex-end !important;
+          padding-top: 8pt !important;
+        }
+
+        .report-signature-block {
+          border-top: 1pt solid #000 !important;
+          padding-top: 8pt !important;
+        }
+
+        .report-footer-signature {
+          margin-top: 12pt !important;
+          border-top: 1pt solid #000 !important;
+          padding-top: 8pt !important;
+          page-break-inside: avoid !important;
+        }
+        
         th {
-          background: #f1f5f9 !important;
+          background: #1e3a8a !important;
+          color: #ffffff !important;
           font-weight: 600 !important;
         }
         
@@ -395,13 +475,21 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           box-shadow: none !important;
         }
 
-        /* Ensure colors print */
-        .bg-blue-50, .bg-blue-100 {
-          background-color: #eff6ff !important;
+        /* Flatten section backgrounds */
+        .bg-blue-50,
+        .bg-blue-100,
+        .bg-gray-50,
+        .bg-gray-100,
+        .bg-gray-200,
+        .bg-slate-50,
+        .bg-green-50,
+        .bg-green-100,
+        .bg-orange-50 {
+          background-color: #ffffff !important;
         }
-        
-        .bg-gray-50 {
-          background-color: #f9fafb !important;
+
+        .section-header {
+          display: none !important;
         }
         
         /* Notes section */
@@ -441,6 +529,40 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
 
   const handleExportWord = () => {
     exportToWord('full-report-content', `${company.name}_Financial_Statements`);
+  };
+
+  const ReportHeader: React.FC<{ title: string; subtitle: string }> = ({ title, subtitle }) => (
+    <div className="report-statement-header hidden print:block">
+      <div className="report-company">
+        <div>{company.name}</div>
+        <div>CIN: {company.cin}</div>
+        <div>{company.address}</div>
+      </div>
+      <div className="report-title">{title}</div>
+      <div className="report-subtitle">{subtitle}</div>
+      <div className="report-unit-note">(All amounts are stated in {unitLabel} unless otherwise stated)</div>
+    </div>
+  );
+
+  const ReportSignatures = () => {
+    if (!company.settings.formatting.showSignatureBlocks || company.settings.formatting.signatureBlocks.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="report-footer-signature hidden print:block">
+        <div className="report-signatures-grid">
+          {company.settings.formatting.signatureBlocks.map((signature) => (
+            <div key={signature.id} className="report-signature">
+              <div className="line"></div>
+              <div className="text-[10px] font-semibold">{signature.title}</div>
+              <div className="text-[10px]">{signature.name}</div>
+              <div className="text-[9px] text-gray-600">{signature.designation}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -570,61 +692,49 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           </div>
         </section>
 
-        {/* Balance Sheet Section - Starts on page 2 */}
-        <section className="professional-balance-sheet">
-          <div className="section-header hidden print:block">
-            <h3 className="section-title">Balance Sheet</h3>
-            <p className="section-subtitle">As at {company.yearEnd}</p>
-          </div>
+        {/* Balance Sheet Section */}
+        <section className="professional-balance-sheet page-break-after">
           <div className="px-8 print:px-0">
+            <ReportHeader title="Standalone Balance Sheet" subtitle={`As at ${company.yearEnd}`} />
             <BalanceSheet company={company} modeOverride="report" />
+            <ReportSignatures />
           </div>
         </section>
 
         {/* Profit & Loss Section */}
         <section className="page-break-after">
-          <div className="section-header hidden print:block">
-            <h3 className="section-title">Statement of Profit & Loss</h3>
-            <p className="section-subtitle">For the year ended {company.yearEnd}</p>
-          </div>
           <div className="px-8 print:px-4">
+            <ReportHeader title="Statement of Profit & Loss" subtitle={`For the year ended ${company.yearEnd}`} />
             <ProfitLoss company={company} modeOverride="report" />
+            <ReportSignatures />
           </div>
         </section>
 
         {/* Changes in Equity Section */}
         <section className="page-break-after">
-          <div className="section-header hidden print:block">
-            <h3 className="section-title">Statement of Changes in Equity</h3>
-            <p className="section-subtitle">For the year ended {company.yearEnd}</p>
-          </div>
           <div className="px-8 print:px-4">
+            <ReportHeader title="Statement of Changes in Equity" subtitle={`For the year ended ${company.yearEnd}`} />
             <ChangesInEquity company={company} modeOverride="report" />
+            <ReportSignatures />
           </div>
         </section>
 
         {/* Cash Flow Section */}
         <section className="page-break-after">
-          <div className="section-header hidden print:block">
-            <h3 className="section-title">Cash Flow Statement</h3>
-            <p className="section-subtitle">For the year ended {company.yearEnd}</p>
-          </div>
           <div className="px-8 print:px-4">
+            <ReportHeader title="Cash Flow Statement" subtitle={`For the year ended ${company.yearEnd}`} />
             <CashFlow company={company} modeOverride="report" />
+            <ReportSignatures />
           </div>
         </section>
 
         {/* Notes Section */}
-        <section>
-          <div className="section-header hidden print:block">
-            <h3 className="section-title">Notes to Financial Statements</h3>
-            <p className="section-subtitle">For the year ended {company.yearEnd}</p>
-          </div>
+        <section className="page-break-before">
+          <ReportHeader title="Notes to Financial Statements" subtitle={`For the year ended ${company.yearEnd}`} />
           <div className="px-8 print:px-4">
             <Notes company={company} modeOverride="report" />
           </div>
         </section>
-
         {/* Footer */}
         <footer className="text-center text-xs text-gray-500 mt-20 print:mt-8 py-8 bg-gray-50 border-t border-gray-100 print:bg-white print:border-t print:border-gray-300 print:py-4">
           <div className="max-w-2xl mx-auto space-y-2 print:space-y-1">

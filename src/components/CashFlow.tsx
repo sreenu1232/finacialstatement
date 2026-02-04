@@ -15,6 +15,7 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
   const { viewMode, updateCompanyCF, updateCompany, setActiveTab } = useApp();
   const effectiveViewMode = modeOverride ?? viewMode;
   const isEditable = effectiveViewMode === 'edit';
+  const isReportMode = effectiveViewMode === 'report';
   const totals = calculateCFTotal(company.cashFlow);
   const noteIndex = buildNoteIndex(company);
   const { unitOfMeasurement, decimalPoints, numberStyle, customNumberGrouping, tableDesign, tableAccent, tableDensity, showSignatureBlocks, signatureBlocks } = company.settings.formatting;
@@ -23,11 +24,12 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
   const formatValue = (value: number) =>
     formatINR(value, unitOfMeasurement, decimalPoints, numberStyle, customNumberGrouping);
   const unitLabel = getUnitLabel(unitOfMeasurement);
+  const unitLabelForHeader = unitLabel.replace(/^₹\s*\(/, '₹ in ').replace(/\)$/, '');
 
   const { tableClassName, theadClassName } = getTableDesignClasses(tableDesign, tableAccent, tableDensity);
 
   const renderSignatureBlocks = () => {
-    if (!showSignatureBlocks || signatureBlocks.length === 0) return null;
+    if (isReportMode || !showSignatureBlocks || signatureBlocks.length === 0) return null;
 
     return (
       <div className="mt-8 pt-6 border-t border-gray-300">
@@ -72,14 +74,6 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
           <td className="border p-2 text-right bg-blue-50">
             <div className="flex items-center justify-end gap-2">
               <span className="font-medium">{formatValue(currentValue)}</span>
-              <button
-                type="button"
-                onClick={() => handleNoteClick(resolvedNote)}
-                className="text-xs text-blue-600 hover:text-blue-800"
-                title="View Note Details"
-              >
-                📊
-              </button>
             </div>
           </td>
           <td className="border p-2">
@@ -178,12 +172,16 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
 
   return (
     <div style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}>
-      <h3 className="text-lg font-bold mb-2 cash-flow-title print:text-center print:mb-6" style={{ color: primaryColor }}>
-        Cash Flow Statement
-      </h3>
-      <p className="text-sm mb-4 print:text-center print:mb-6" style={{ color: secondaryColor }}>
-        For the year ended {company.yearEnd}
-      </p>
+      {!isReportMode && (
+        <>
+          <h3 className="text-lg font-bold mb-2 cash-flow-title print:text-center print:mb-6" style={{ color: primaryColor }}>
+            Cash Flow Statement
+          </h3>
+          <p className="text-sm mb-4 print:text-center print:mb-6" style={{ color: secondaryColor }}>
+            For the year ended {company.yearEnd}
+          </p>
+        </>
+      )}
 
       {isEditable && (
         <div className="mb-4 flex justify-end">
@@ -212,23 +210,38 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
       <div className="overflow-x-auto">
         <table className={tableClassName} style={{ fontSize: `${fontSize}px` }}>
           <thead className={theadClassName}>
-            <tr>
-              <th className="border p-2 text-left">Particulars</th>
-              <th className="border p-2 text-right">
-                {company.yearEnd}
-                <br />
-                <span className="text-xs" style={{ color: secondaryColor }}>
-                  {unitLabel}
-                </span>
-              </th>
-              <th className="border p-2 text-right">
-                {company.prevYearEnd}
-                <br />
-                <span className="text-xs" style={{ color: secondaryColor }}>
-                  {unitLabel}
-                </span>
-              </th>
-            </tr>
+            {isReportMode ? (
+              <>
+                <tr>
+                  <th className="border p-2 text-left" rowSpan={2}>Particulars</th>
+                  <th className="border p-2 text-right" colSpan={2}>
+                    ({unitLabelForHeader})
+                  </th>
+                </tr>
+                <tr>
+                  <th className="border p-2 text-right">Year ended {company.yearEnd}</th>
+                  <th className="border p-2 text-right">Year ended {company.prevYearEnd}</th>
+                </tr>
+              </>
+            ) : (
+              <tr>
+                <th className="border p-2 text-left">Particulars</th>
+                <th className="border p-2 text-right">
+                  {company.yearEnd}
+                  <br />
+                  <span className="text-xs" style={{ color: secondaryColor }}>
+                    {unitLabel}
+                  </span>
+                </th>
+                <th className="border p-2 text-right">
+                  {company.prevYearEnd}
+                  <br />
+                  <span className="text-xs" style={{ color: secondaryColor }}>
+                    {unitLabel}
+                  </span>
+                </th>
+              </tr>
+            )}
           </thead>
           <tbody>
             <tr className="bg-blue-50 font-semibold">

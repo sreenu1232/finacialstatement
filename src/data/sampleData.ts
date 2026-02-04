@@ -263,6 +263,14 @@ export const sampleCompanies: Company[] = [
             transferToRetainedEarnings: { current: 0, previous: 0 },
             otherChange: { current: 0, previous: 0 }
           },
+          other_reserves_specified: {
+            beginning: { current: 2000000, previous: 0 },
+            accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+            totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+            dividends: { current: 0, previous: 0 },
+            transferToRetainedEarnings: { current: 0, previous: 0 },
+            otherChange: { current: 0, previous: 0 }
+          },
           money_received_against_share_warrants: {
             beginning: { current: 1500000, previous: 0 },
             accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },

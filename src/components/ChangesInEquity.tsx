@@ -109,6 +109,14 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
           transferToRetainedEarnings: { current: 0, previous: 0 },
           otherChange: { current: 0, previous: 0 }
         },
+        other_reserves_specified: {
+          beginning: { current: 0, previous: 0 },
+          accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
+          totalComprehensiveIncomeForYear: { current: 0, previous: 0 },
+          dividends: { current: 0, previous: 0 },
+          transferToRetainedEarnings: { current: 0, previous: 0 },
+          otherChange: { current: 0, previous: 0 }
+        },
         money_received_against_share_warrants: {
           beginning: { current: 0, previous: 0 },
           accountingPolicyOrPriorPeriodErrors: { current: 0, previous: 0 },
@@ -174,9 +182,20 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
   const scClosingCurrent = scOpeningCurrent + scChangesCurrent;
   const scClosingPrev = scOpeningPrev + scChangesPrev;
 
+  type OtherEquityTotals = {
+    beginning: number;
+    accounting: number;
+    restatedBeginning: number;
+    tci: number;
+    dividends: number;
+    transfer: number;
+    other: number;
+    ending: number;
+  };
+
   type OtherEquityRowConfig =
     | { kind: 'header'; label: string; indent?: number }
-    | { kind: 'computed'; label: string; compute: (year: 'current' | 'previous') => number; indent?: number }
+    | { kind: 'computed'; label: string; rowIds: readonly string[]; indent?: number }
     | { kind: 'row'; id: string; label: string; includeInTotal: boolean; indent?: number };
 
   const getRow = useCallback((rowId: string): ChangesInEquityOtherEquityRowInput => {
@@ -219,31 +238,52 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
       { kind: 'row', id: 'remeasurements_net_defined_benefit_plans', label: 'Remeasurements of the net defined benefit Plans', includeInTotal: true, indent: 2 },
       { kind: 'row', id: 'exchange_differences_foreign_operation', label: 'Exchange differences on translating the financial statements of a foreign operation', includeInTotal: true, indent: 2 },
       { kind: 'row', id: 'others_reserves', label: 'Others', includeInTotal: true, indent: 2 },
+      { kind: 'computed', label: '(iii) Total Reserves', indent: 1, rowIds: reserveRowIds },
 
-      { kind: 'row', id: 'reserves_representing_unrealised_gains_losses', label: '1.2 Other Reserves (to be specified separately)', includeInTotal: true, indent: 1 },
-
-      { kind: 'computed', label: '(iii) Total Reserves', indent: 1, compute: (year) => {
-        return reserveRowIds.reduce((sum, id) => {
-          const row = getRow(id);
-          return sum + computeOtherEquity(row, year).ending;
-        }, 0);
-      }},
-
+      { kind: 'row', id: 'other_reserves_specified', label: '1.2 Other Reserves (to be specified separately)', includeInTotal: true, indent: 1 },
       { kind: 'row', id: 'money_received_against_share_warrants', label: '(iv) Money received against share warrants', includeInTotal: true, indent: 1 },
       { kind: 'row', id: 'others_final', label: '(v) Others', includeInTotal: true, indent: 1 }
     ];
+  }, []);
+
+  const computeTotalsForRowIds = useCallback((rowIds: readonly string[], year: 'current' | 'previous'): OtherEquityTotals => {
+    return rowIds.reduce((sum: OtherEquityTotals, id) => {
+      const row = getRow(id);
+      const values = computeOtherEquity(row, year);
+      return {
+        beginning: sum.beginning + values.beginning,
+        accounting: sum.accounting + values.accounting,
+        restatedBeginning: sum.restatedBeginning + values.restatedBeginning,
+        tci: sum.tci + values.tci,
+        dividends: sum.dividends + values.dividends,
+        transfer: sum.transfer + values.transfer,
+        other: sum.other + values.other,
+        ending: sum.ending + values.ending
+      };
+    }, { beginning: 0, accounting: 0, restatedBeginning: 0, tci: 0, dividends: 0, transfer: 0, other: 0, ending: 0 });
   }, [getRow, computeOtherEquity]);
 
-  const otherEquityTotals = (year: 'current' | 'previous') => {
-    return otherEquityRows.reduce((sum, r) => {
+  const otherEquityTotals = useCallback((year: 'current' | 'previous'): OtherEquityTotals => {
+    return otherEquityRows.reduce((sum: OtherEquityTotals, r) => {
       if (r.kind !== 'row' || !r.includeInTotal) return sum;
-      const row = getRow(r.id);
-      return sum + computeOtherEquity(row, year).ending;
-    }, 0);
-  };
+      const values = computeOtherEquity(getRow(r.id), year);
+      return {
+        beginning: sum.beginning + values.beginning,
+        accounting: sum.accounting + values.accounting,
+        restatedBeginning: sum.restatedBeginning + values.restatedBeginning,
+        tci: sum.tci + values.tci,
+        dividends: sum.dividends + values.dividends,
+        transfer: sum.transfer + values.transfer,
+        other: sum.other + values.other,
+        ending: sum.ending + values.ending
+      };
+    }, { beginning: 0, accounting: 0, restatedBeginning: 0, tci: 0, dividends: 0, transfer: 0, other: 0, ending: 0 });
+  }, [otherEquityRows, getRow, computeOtherEquity]);
 
-  const oeClosingCurrent = otherEquityTotals('current');
-  const oeClosingPrev = otherEquityTotals('previous');
+  const oeTotalsCurrent = otherEquityTotals('current');
+  const oeTotalsPrev = otherEquityTotals('previous');
+  const oeClosingCurrent = oeTotalsCurrent.ending;
+  const oeClosingPrev = oeTotalsPrev.ending;
 
   const totalEquityCurrent = scClosingCurrent + oeClosingCurrent;
   const totalEquityPrevious = scClosingPrev + oeClosingPrev;
@@ -278,19 +318,26 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
     return <span>{formatValue(display)}</span>;
   };
 
+  const formatDividendValue = (value: number) => {
+    const display = value ? -Math.abs(value) : 0;
+    return formatValue(display);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className={`${effectiveViewMode === 'report' ? 'text-center mb-6' : ''}`}>
-        <h2 className={`text-xl font-bold ${effectiveViewMode === 'report' ? 'text-2xl' : ''}`} style={{ color: primaryColor }}>
-          {effectiveViewMode === 'edit' ? 'Edit Statement of Changes in Equity' : 'Statement of Changes in Equity'}
-        </h2>
-        {effectiveViewMode !== 'edit' && (
-          <p className="text-sm text-gray-600 mt-1">
-            for the year ended {company.yearEnd}
-          </p>
-        )}
-      </div>
+      {effectiveViewMode !== 'report' && (
+        <div>
+          <h2 className="text-xl font-bold" style={{ color: primaryColor }}>
+            {effectiveViewMode === 'edit' ? 'Edit Statement of Changes in Equity' : 'Statement of Changes in Equity'}
+          </h2>
+          {effectiveViewMode !== 'edit' && (
+            <p className="text-sm text-gray-600 mt-1">
+              for the year ended {company.yearEnd}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* A. Equity Share Capital */}
       <div className="mb-8">
@@ -353,7 +400,7 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
           <tbody>
             {/* Current Year block */}
             <tr className="bg-gray-100 font-semibold">
-              <td className="border p-2" colSpan={9}>For the year ended {company.yearEnd} (₹ {unitLabel})</td>
+              <td className="border p-2" colSpan={9}>For the year ended {company.yearEnd} ( {unitLabel})</td>
             </tr>
             {otherEquityRows.map((r, idx) => {
               const paddingStyle = r.indent ? { paddingLeft: r.indent * 16 } : undefined;
@@ -367,12 +414,18 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
               }
 
               if (r.kind === 'computed') {
-                const v = r.compute('current');
+                const totals = computeTotalsForRowIds(r.rowIds, 'current');
                 return (
                   <tr key={`cmp-current-${idx}`} className="bg-slate-50 font-semibold">
                     <td className="border p-2" style={paddingStyle}>{r.label}</td>
-                    <td className="border p-2 text-right" colSpan={7}></td>
-                    <td className="border p-2 text-right">{formatValue(v)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.beginning)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.accounting)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.restatedBeginning)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.tci)}</td>
+                    <td className="border p-2 text-right">{formatDividendValue(totals.dividends)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.transfer)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.other)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.ending)}</td>
                   </tr>
                 );
               }
@@ -395,13 +448,19 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
             })}
             <tr className={`font-bold ${accentStrongRowClass}`}>
               <td className="border p-2">Total Other Equity</td>
-              <td className="border p-2 text-right" colSpan={7}></td>
-              <td className="border p-2 text-right">{formatValue(oeClosingCurrent)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.beginning)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.accounting)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.restatedBeginning)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.tci)}</td>
+              <td className="border p-2 text-right">{formatDividendValue(oeTotalsCurrent.dividends)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.transfer)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.other)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsCurrent.ending)}</td>
             </tr>
 
             {/* Previous Year block */}
             <tr className="bg-gray-100 font-semibold">
-              <td className="border p-2" colSpan={9}>For the year ended {company.prevYearEnd} (₹ {unitLabel})</td>
+              <td className="border p-2" colSpan={9}>For the year ended {company.prevYearEnd} ( {unitLabel})</td>
             </tr>
             {otherEquityRows.map((r, idx) => {
               const paddingStyle = r.indent ? { paddingLeft: r.indent * 16 } : undefined;
@@ -415,12 +474,18 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
               }
 
               if (r.kind === 'computed') {
-                const v = r.compute('previous');
+                const totals = computeTotalsForRowIds(r.rowIds, 'previous');
                 return (
                   <tr key={`cmp-prev-${idx}`} className="bg-slate-50 font-semibold">
                     <td className="border p-2" style={paddingStyle}>{r.label}</td>
-                    <td className="border p-2 text-right" colSpan={7}></td>
-                    <td className="border p-2 text-right">{formatValue(v)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.beginning)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.accounting)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.restatedBeginning)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.tci)}</td>
+                    <td className="border p-2 text-right">{formatDividendValue(totals.dividends)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.transfer)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.other)}</td>
+                    <td className="border p-2 text-right">{formatValue(totals.ending)}</td>
                   </tr>
                 );
               }
@@ -443,8 +508,14 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
             })}
             <tr className={`font-bold ${accentStrongRowClass}`}>
               <td className="border p-2">Total Other Equity</td>
-              <td className="border p-2 text-right" colSpan={7}></td>
-              <td className="border p-2 text-right">{formatValue(oeClosingPrev)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.beginning)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.accounting)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.restatedBeginning)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.tci)}</td>
+              <td className="border p-2 text-right">{formatDividendValue(oeTotalsPrev.dividends)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.transfer)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.other)}</td>
+              <td className="border p-2 text-right">{formatValue(oeTotalsPrev.ending)}</td>
             </tr>
           </tbody>
         </table>
@@ -490,7 +561,7 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
       </div>
 
       {/* Signature Blocks */}
-      {showSignatureBlocks && signatureBlocks && signatureBlocks.length > 0 && (
+      {effectiveViewMode !== 'report' && showSignatureBlocks && signatureBlocks && signatureBlocks.length > 0 && (
         <div className="mt-12 pt-8 border-t border-gray-300">
           <div className="flex justify-between flex-wrap gap-8">
             {signatureBlocks.map((block) => (
