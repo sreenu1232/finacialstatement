@@ -12,7 +12,7 @@ interface Props {
 }
 
 const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
-  const { viewMode, updateCompanyCF, updateCompany, setActiveTab } = useApp();
+  const { viewMode, updateCompanyCF, updateCompany } = useApp();
   const effectiveViewMode = modeOverride ?? viewMode;
   const isEditable = effectiveViewMode === 'edit';
   const isReportMode = effectiveViewMode === 'report';
@@ -52,16 +52,6 @@ const CashFlow: React.FC<Props> = ({ company, modeOverride }) => {
         </div>
       </div>
     );
-  };
-
-  const handleNoteClick = (noteNumber: string) => {
-    setActiveTab('notes');
-    setTimeout(() => {
-      const el = document.getElementById(`note-${noteNumber}`);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 50);
   };
 
   const renderInputField = (currentValue: number, previousValue: number, path: string, note?: string) => {
