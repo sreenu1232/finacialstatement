@@ -151,7 +151,7 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
       {!isReportMode && (
         <>
           <h3 className="text-lg font-bold mb-2 profit-loss-title print:text-center print:mb-6" style={{ color: primaryColor }}>
-            Profit & Loss Statement
+           Statement of Profit & Loss 
           </h3>
           <p className="text-sm mb-4 print:text-center print:mb-6" style={{ color: secondaryColor }}>
             For the year ended {company.yearEnd}
@@ -752,7 +752,7 @@ const ProfitLoss: React.FC<Props> = ({ company, modeOverride }) => {
             <tr className="font-bold bg-blue-50">
               <td className="border p-2 pl-6">(2) Diluted</td>
               {renderNoteTd(company.profitLoss.earningsPerShareTotal.diluted.note)}
-              {viewMode === 'edit' ?
+              {isEditable ?
                 renderInputField(
                   company.profitLoss.earningsPerShareTotal.diluted.current,
                   company.profitLoss.earningsPerShareTotal.diluted.previous,

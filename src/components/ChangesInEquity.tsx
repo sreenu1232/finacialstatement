@@ -350,11 +350,11 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
               <th className="border p-2 text-left">Particulars</th>
               <th className="border p-2 text-right w-40">
                 <div>{company.yearEnd}</div>
-                <div className="text-xs font-normal">₹ ({unitLabel})</div>
+                <div className="text-xs font-normal"> ({unitLabel})</div>
               </th>
               <th className="border p-2 text-right w-40">
                 <div>{company.prevYearEnd}</div>
-                <div className="text-xs font-normal">₹ ({unitLabel})</div>
+                <div className="text-xs font-normal"> ({unitLabel})</div>
               </th>
             </tr>
           </thead>
@@ -532,11 +532,11 @@ const ChangesInEquity: React.FC<Props> = ({ company, modeOverride }) => {
               <th className="border p-2 text-left">Particulars</th>
               <th className="border p-2 text-right w-40">
                 <div>{company.yearEnd}</div>
-                <div className="text-xs font-normal">₹ ({unitLabel})</div>
+                <div className="text-xs font-normal"> ({unitLabel})</div>
               </th>
               <th className="border p-2 text-right w-40">
                 <div>{company.prevYearEnd}</div>
-                <div className="text-xs font-normal">₹ ({unitLabel})</div>
+                <div className="text-xs font-normal"> ({unitLabel})</div>
               </th>
             </tr>
           </thead>

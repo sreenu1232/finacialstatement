@@ -1039,7 +1039,7 @@ const BalanceSheet: React.FC<Props> = ({ company, modeOverride }) => {
             <tr>
               <td className="border p-2 pl-12">(c) Provisions</td>
               {renderNoteTd(company.balanceSheet.currentLiabilities.provisions.note)}
-              {viewMode === 'edit' ?
+              {isEditable ?
                 renderInputField(
                   company.balanceSheet.currentLiabilities.provisions.current,
                   company.balanceSheet.currentLiabilities.provisions.previous,
@@ -1057,7 +1057,7 @@ const BalanceSheet: React.FC<Props> = ({ company, modeOverride }) => {
             <tr>
               <td className="border p-2 pl-12">(d) Current Tax Liabilities (Net)</td>
               {renderNoteTd(company.balanceSheet.currentLiabilities.currentTaxLiabilities.note)}
-              {viewMode === 'edit' ?
+              {isEditable ?
                 renderInputField(
                   company.balanceSheet.currentLiabilities.currentTaxLiabilities.current,
                   company.balanceSheet.currentLiabilities.currentTaxLiabilities.previous,

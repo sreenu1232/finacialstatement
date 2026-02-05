@@ -6,8 +6,6 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  List,
-  ListOrdered,
   Type,
   Highlighter,
   Link as LinkIcon,
@@ -15,6 +13,8 @@ import {
   Undo,
   Redo,
   Minus,
+  List as ListIcon,
+  ListOrdered as ListOrderedIcon,
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -297,12 +297,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         {/* Lists */}
         <ToolbarButton
           onClick={() => { execCommand('insertUnorderedList'); syncContentToState(); }}
-          icon={<List size={15} />}
+          icon={<ListIcon size={15} />}
           title="Bullet List"
         />
         <ToolbarButton
           onClick={() => { execCommand('insertOrderedList'); syncContentToState(); }}
-          icon={<ListOrdered size={15} />}
+          icon={<ListOrderedIcon size={15} />}
           title="Numbered List"
         />
 

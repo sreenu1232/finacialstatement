@@ -695,7 +695,7 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
         {/* Balance Sheet Section */}
         <section className="professional-balance-sheet page-break-after">
           <div className="px-8 print:px-0">
-            <ReportHeader title="Standalone Balance Sheet" subtitle={`As at ${company.yearEnd}`} />
+            <ReportHeader title="Standalone Balance Sheet" subtitle={`As at 31 March, ${company.yearEnd}`} />
             <BalanceSheet company={company} modeOverride="report" />
             <ReportSignatures />
           </div>

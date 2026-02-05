@@ -14,8 +14,8 @@ const EPSBreakdownTable: React.FC<EPSBreakdownTableProps> = ({ items, onUpdate, 
     // Only ABC Limited gets pre-filled values, others get 0
     const defaultItems: BreakdownItem[] = useMemo(() => company.name === 'ABC Limited' 
         ? [
-            { id: 'net-profit', description: 'Net profit', current: 19200000, previous: 0 },
-            { id: 'equity-shares', description: 'No.of Equity Shares', current: 4000000, previous: 0 }
+            { id: 'net-profit', description: 'Net profit', current: 4200000, previous: 0 },
+            { id: 'equity-shares', description: 'No.of Equity Shares', current: 1000000, previous: 0 }
           ]
         : [
             { id: 'net-profit', description: 'Net profit', current: 0, previous: 0 },

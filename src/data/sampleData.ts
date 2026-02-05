@@ -127,12 +127,12 @@ export const sampleCompanies: Company[] = [
       totalComprehensiveIncomeForThePeriod: { current: 0, previous: 0, note: '63' },
       // XVI. Earnings per equity share (for continuing operation)
       earningsPerShareContinuing: {
-        basic: { current: 0, previous: 0, note: '64' },
+        basic: { current: 4.2, previous: 0, note: '64' },
         diluted: { current: 0, previous: 0, note: '65' }
       },
       // XVII. Earnings per equity share (for discontinued operation)
       earningsPerShareDiscontinued: {
-        basic: { current: 4.8, previous: 0, note: '66' },
+        basic: { current: 0, previous: 0, note: '66' },
         diluted: { current: 0, previous: 0, note: '67' }
       },
       // XVIII. Earning per equity share (for discontinued & continuing operation)
@@ -299,7 +299,7 @@ export const sampleCompanies: Company[] = [
         paperSize: 'A4'
       },
       formatting: {
-        decimalPoints: 0,
+        decimalPoints: 2,
         unitOfMeasurement: 'full-number',
         numberStyle: 'indian',
         customNumberGrouping: '3,2',
@@ -326,11 +326,31 @@ export const sampleCompanies: Company[] = [
         showDSCSign: true
       }
     },
-    noteDetails: {},
+    noteDetails: {
+      '64': `
+        <p><strong>Computation of Basic Earnings Per Share (Continuing Operations)</strong></p>
+        <table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px;">
+          <tbody>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:6px;">Profit attributable to equity shareholders (INR)</td>
+              <td style="border:1px solid #e5e7eb;padding:6px;text-align:right;">4,200,000</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:6px;">Weighted average number of equity shares</td>
+              <td style="border:1px solid #e5e7eb;padding:6px;text-align:right;">1,000,000</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:6px;"><strong>Basic EPS (INR)</strong></td>
+              <td style="border:1px solid #e5e7eb;padding:6px;text-align:right;"><strong>4.20</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      `
+    },
     breakdowns: {
-      '66': [
-        { id: 'net-profit', description: 'Net profit', current: 19200000, previous: 0 },
-        { id: 'equity-shares', description: 'No.of Equity Shares', current: 4000000, previous: 0 }
+      '64': [
+        { id: 'net-profit', description: 'Net profit', current: 4200000, previous: 0 },
+        { id: 'equity-shares', description: 'No.of Equity Shares', current: 1000000, previous: 0 }
       ]
     },
     ppeBreakdowns: {
