@@ -13,7 +13,7 @@ import {
   Trash2,
   Layout
 } from 'lucide-react';
-import { Company, TemplateSettings, FormattingSettings, SignatureBlock, PaperSize, FontStyle, UnitOfMeasurement, TableDesign, TableAccent, TableDensity, PDFTemplateFormat, NoteFormat } from '../types';
+import type { Company, TemplateSettings, FormattingSettings, SignatureBlock, PaperSize, FontStyle, UnitOfMeasurement, TableDesign, TableAccent, TableDensity, PDFTemplateFormat, NoteFormat } from '../types';
 
 interface MastersSidebarProps {
   company: Company;
