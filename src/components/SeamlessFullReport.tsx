@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, AlertTriangle, CheckCircle, XCircle, ChevronDown, FileText, FileDown, Sheet, BarChart3, Layers, Waves, StickyNote } from 'lucide-react';
+import { AlertTriangle, CheckCircle, XCircle, ChevronDown, FileText, FileDown, Sheet, BarChart3, Layers, Waves, StickyNote } from 'lucide-react';
 import type { Company } from '../types';
 import { useApp } from '../context/AppContext';
 import BalanceSheet from './BalanceSheet';
