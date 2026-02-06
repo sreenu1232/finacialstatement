@@ -135,6 +135,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
   const { updateCompany, viewMode } = useApp();
   const { fontStyle, fontSize, primaryColor, secondaryColor } =
     company.settings.template;
+  const noteFormat = company.settings.formatting.noteFormat ?? 'professional';
 
   const { list: resolvedNotes } = buildNoteIndex(company);
   const effectiveViewMode = modeOverride || viewMode;
@@ -597,7 +598,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
       )}
 
       {/* Notes List */}
-      <div className="space-y-4">
+      <div className={`space-y-4 note-format-${noteFormat}`}>
         {filteredNotes.map((note) => {
           const { number, title, originalNote, bsPath } = note;
           const isExpanded = expandedNotes.has(number);
@@ -721,7 +722,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
             <div
               key={number}
               id={`note-${number}`}
-              className={`bg-white overflow-hidden transition-all duration-200 ${
+              className={`note-card bg-white overflow-hidden transition-all duration-200 ${
                 isReportMode 
                   ? 'border-b border-slate-200 print:border-b print:border-slate-300 mb-4' 
                   : 'rounded-xl border border-slate-200 shadow-sm hover:shadow-md print:shadow-none print:border-slate-300 print:rounded-none print:border-b'
@@ -729,7 +730,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
             >
               {/* Note Header */}
               {isReportMode ? (
-                <div className="flex items-center gap-3 py-3 border-b border-slate-100 print:py-2">
+                <div className="note-header flex items-center gap-3 py-3 border-b border-slate-100 print:py-2">
                   <span className="font-bold text-blue-600 text-sm">{number}.</span>
                   <h3 className="flex-1 font-semibold text-slate-800 text-sm print:text-xs">
                     {title}
@@ -738,7 +739,7 @@ const Notes: React.FC<NotesProps> = ({ company, modeOverride }) => {
               ) : (
                 <button
                   onClick={() => toggleNote(number)}
-                  className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-slate-50 transition-colors print:hover:bg-white print:px-2 print:py-2"
+                  className="note-header w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-slate-50 transition-colors print:hover:bg-white print:px-2 print:py-2"
                 >
                   <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 font-semibold text-sm shrink-0 print:w-6 print:h-6 print:text-xs">
                     {number}

@@ -307,6 +307,7 @@ const AddCompanyPage: React.FC = () => {
     },
     settings: {
       template: {
+        templateFormat: 'professional',
         primaryColor: '#2563eb',
         secondaryColor: '#64748b',
         fontStyle: 'arial',
@@ -321,6 +322,7 @@ const AddCompanyPage: React.FC = () => {
         tableDesign: 'classic',
         tableAccent: 'blue',
         tableDensity: 'comfortable',
+        noteFormat: 'professional',
         showSignatureBlocks: false,
         signatureBlocks: [],
         showDSCSign: false

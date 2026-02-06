@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, AlertTriangle, CheckCircle, XCircle, ChevronDown, FileText } from 'lucide-react';
+import { Printer, AlertTriangle, CheckCircle, XCircle, ChevronDown, FileText, FileDown, Sheet, BarChart3, Layers, Waves, StickyNote } from 'lucide-react';
 import { Company } from '../types';
 import { useApp } from '../context/AppContext';
 import BalanceSheet from './BalanceSheet';
@@ -10,6 +10,7 @@ import Notes from './Notes';
 import { getUnitLabel } from '../utils/formatters';
 import { runAllValidations, ValidationResult } from '../utils/validationHelpers';
 import { exportToWord } from '../utils/exportHelpers';
+import { generatePrintStyles } from '../utils/templateStyles';
 
 interface Props {
   company: Company;
@@ -76,434 +77,19 @@ const ValidationDashboard: React.FC<{ company: Company }> = ({ company }) => {
 
 const SeamlessFullReport: React.FC<Props> = ({ company }) => {
   const { viewMode } = useApp();
-  const { fontStyle, fontSize, primaryColor, secondaryColor, logo, paperSize } = company.settings.template;
+  const { fontStyle, fontSize, primaryColor, secondaryColor, logo, paperSize, templateFormat } = company.settings.template;
   const { unitOfMeasurement } = company.settings.formatting;
   const unitLabel = getUnitLabel(unitOfMeasurement);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const [downloadSection, setDownloadSection] = useState<'full-report' | 'balance-sheet' | 'profit-loss' | 'changes-in-equity' | 'cash-flow' | 'notes'>('full-report');
 
   const paperClass = paperSize === 'A4' ? 'w-[210mm] min-h-[297mm] p-[20mm]' : 'w-full max-w-4xl p-8';
 
-  const handlePrint = () => {
-    // Create comprehensive print styles
+  const handlePrint = async () => {
+    // Create comprehensive print styles using template-specific styling
     const style = document.createElement('style');
     style.id = 'print-styles';
-    style.textContent = `
-      @page {
-        size: A4;
-        margin: 15mm 15mm 20mm 15mm;
-      }
-      
-      @media print {
-        /* Reset everything */
-        * {
-          box-sizing: border-box;
-        }
-        
-        html, body {
-          width: 210mm;
-          margin: 0 !important;
-          padding: 0 !important;
-          background: white !important;
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-          font-size: 9pt !important;
-        }
-        
-        /* Hide all non-print elements */
-        .no-print,
-        .print\\:hidden,
-        button:not(.print-show),
-        input,
-        select,
-        textarea,
-        nav,
-        header:not(.print-header),
-        [class*="sidebar"],
-        [class*="Sidebar"] {
-          display: none !important;
-        }
-        
-        /* Report container */
-        #full-report-content {
-          width: 100% !important;
-          max-width: none !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          box-shadow: none !important;
-          border-radius: 0 !important;
-          background: white !important;
-        }
-        
-        /* Professional Cover Page with Company Details - Combined on first page */
-        .professional-cover-page {
-          page-break-after: always !important;
-          break-after: page !important;
-          display: block !important;
-          background: white !important;
-          padding: 0 !important;
-          height: auto !important;
-        }
-        
-        /* Header Section with Professional Gradient */
-        .cover-header-section {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%) !important;
-          padding: 35mm 20mm 25mm 20mm !important;
-          text-align: center !important;
-          color: white !important;
-          page-break-inside: avoid !important;
-        }
-        
-        .cover-header-content {
-          max-width: 180mm !important;
-          margin: 0 auto !important;
-        }
-        
-        .cover-logo-container {
-          margin-bottom: 12mm !important;
-        }
-        
-        .cover-logo {
-          max-height: 35mm !important;
-          max-width: 120mm !important;
-          object-fit: contain !important;
-          filter: brightness(0) invert(1) !important;
-        }
-        
-        .cover-company-name {
-          font-size: 32pt !important;
-          font-weight: 700 !important;
-          margin: 0 0 8mm 0 !important;
-          letter-spacing: 0.5pt !important;
-          color: white !important;
-          text-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-        }
-        
-        .cover-title-section {
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          gap: 12pt !important;
-          margin: 10mm 0 !important;
-        }
-        
-        .cover-title-line {
-          flex: 1 !important;
-          height: 2pt !important;
-          background: rgba(255,255,255,0.6) !important;
-          max-width: 40mm !important;
-        }
-        
-        .cover-title-text {
-          font-size: 14pt !important;
-          font-weight: 600 !important;
-          letter-spacing: 2pt !important;
-          color: white !important;
-          text-transform: uppercase !important;
-          margin: 0 !important;
-        }
-        
-        .cover-year-text {
-          font-size: 16pt !important;
-          font-weight: 500 !important;
-          color: rgba(255,255,255,0.95) !important;
-          margin: 8mm 0 0 0 !important;
-        }
-        
-        /* Company Details Section */
-        .cover-details-section {
-          background: #f8fafc !important;
-          padding: 20mm 20mm 25mm 20mm !important;
-          page-break-inside: avoid !important;
-        }
-        
-        .cover-details-content {
-          max-width: 180mm !important;
-          margin: 0 auto !important;
-        }
-        
-        .cover-details-row {
-          display: flex !important;
-          margin-bottom: 6mm !important;
-          padding-bottom: 5mm !important;
-          border-bottom: 1pt solid #e2e8f0 !important;
-        }
-        
-        .cover-details-row:last-child {
-          border-bottom: none !important;
-          margin-bottom: 0 !important;
-        }
-        
-        .cover-detail-label {
-          font-size: 11pt !important;
-          font-weight: 600 !important;
-          color: #475569 !important;
-          min-width: 45mm !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.3pt !important;
-        }
-        
-        .cover-detail-value {
-          font-size: 11pt !important;
-          color: #1e293b !important;
-          font-weight: 400 !important;
-          flex: 1 !important;
-        }
-        
-        .cover-details-grid {
-          display: grid !important;
-          grid-template-columns: 1fr 1fr !important;
-          gap: 8mm !important;
-          margin: 8mm 0 10mm 0 !important;
-        }
-        
-        .cover-detail-box {
-          background: white !important;
-          border: 1.5pt solid #cbd5e1 !important;
-          border-radius: 4pt !important;
-          padding: 6mm 5mm !important;
-          box-shadow: 0 2pt 4pt rgba(0,0,0,0.05) !important;
-        }
-        
-        .cover-detail-box-label {
-          font-size: 9pt !important;
-          font-weight: 600 !important;
-          color: #64748b !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.5pt !important;
-          margin-bottom: 3mm !important;
-        }
-        
-        .cover-detail-box-value {
-          font-size: 10pt !important;
-          color: #1e293b !important;
-          font-weight: 500 !important;
-          word-break: break-all !important;
-        }
-
-        /* Professional Balance Sheet styling - Starts immediately after cover page */
-        .professional-balance-sheet {
-          page-break-before: auto !important;
-          margin-top: 0 !important;
-          padding-top: 0 !important;
-        }
-
-        /* Section headers - Professional styling */
-        .section-header {
-          display: block !important;
-          background: white !important;
-          border-bottom: 2pt solid #1e293b !important;
-          padding: 16pt 0 8pt 0 !important;
-          margin-bottom: 20pt !important;
-          page-break-after: avoid !important;
-          page-break-inside: avoid !important;
-        }
-
-        .section-header .section-title {
-          font-size: 18pt !important;
-          font-weight: bold !important;
-          color: #1e293b !important;
-          margin: 0 0 4pt 0 !important;
-          text-transform: uppercase;
-          letter-spacing: 1pt;
-          text-align: center !important;
-        }
-
-        .section-header .section-subtitle {
-          font-size: 11pt !important;
-          color: #475569 !important;
-          margin: 0 !important;
-          text-align: center !important;
-          font-weight: 500 !important;
-        }
-
-        /* Section spacing */
-        section {
-          page-break-inside: avoid;
-          margin-bottom: 0 !important;
-        }
-        
-        .page-break-after {
-          page-break-after: always !important;
-          break-after: page !important;
-        }
-
-        .page-break-before {
-          page-break-before: always !important;
-          break-before: page !important;
-        }
-
-        /* Statement header */
-        .report-statement-header {
-          margin-bottom: 8pt !important;
-          text-align: center !important;
-        }
-
-        .report-statement-header .report-company {
-          font-size: 9pt !important;
-          font-weight: 600 !important;
-        }
-
-        .report-statement-header .report-title {
-          font-size: 11pt !important;
-          font-weight: 700 !important;
-          margin: 4pt 0 2pt 0 !important;
-        }
-
-        .report-statement-header .report-subtitle {
-          font-size: 9pt !important;
-          margin: 0 !important;
-        }
-
-        .report-statement-header .report-unit-note {
-          font-size: 8pt !important;
-          font-style: italic !important;
-          margin-top: 2pt !important;
-        }
-
-        /* Tables */
-        table {
-          width: 100% !important;
-          border-collapse: collapse !important;
-          font-size: 9pt !important;
-          page-break-inside: auto;
-        }
-        
-        thead {
-          display: table-header-group;
-        }
-        
-        tr {
-          page-break-inside: avoid;
-          page-break-after: auto;
-        }
-        
-        th, td {
-          padding: 6pt 8pt !important;
-          border: 0.5pt solid #000 !important;
-          text-align: left;
-        }
-        
-        .report-signatures {
-          margin-top: 18pt !important;
-          padding-top: 10pt !important;
-          border-top: 1pt solid #000 !important;
-        }
-
-        .report-signatures-grid {
-          display: flex !important;
-          justify-content: space-between !important;
-          gap: 12pt !important;
-          flex-wrap: wrap !important;
-        }
-
-        .report-signature {
-          width: 45% !important;
-          text-align: center !important;
-          margin-top: 16pt !important;
-        }
-
-        .report-signature .line {
-          border-top: 1pt solid #000 !important;
-          margin-bottom: 4pt !important;
-          height: 1pt !important;
-        }
-
-        .report-signature-page {
-          page-break-before: always !important;
-          break-before: page !important;
-          height: 260mm;
-          display: flex !important;
-          flex-direction: column !important;
-          justify-content: flex-end !important;
-          padding-top: 8pt !important;
-        }
-
-        .report-signature-block {
-          border-top: 1pt solid #000 !important;
-          padding-top: 8pt !important;
-        }
-
-        .report-footer-signature {
-          margin-top: 12pt !important;
-          border-top: 1pt solid #000 !important;
-          padding-top: 8pt !important;
-          page-break-inside: avoid !important;
-        }
-        
-        th {
-          background: #1e3a8a !important;
-          color: #ffffff !important;
-          font-weight: 600 !important;
-        }
-        
-        /* Text alignment */
-        .text-right, td.text-right, th.text-right {
-          text-align: right !important;
-        }
-        
-        .text-center, td.text-center, th.text-center {
-          text-align: center !important;
-        }
-
-        /* Font sizes */
-        .text-sm {
-          font-size: 9pt !important;
-        }
-        
-        .text-xs {
-          font-size: 8pt !important;
-        }
-
-        /* Headings */
-        h1, h2, h3, h4, h5, h6 {
-          page-break-after: avoid;
-          page-break-inside: avoid;
-        }
-
-        /* Footer */
-        footer {
-          page-break-inside: avoid;
-          margin-top: 20pt !important;
-          padding: 12pt !important;
-          border-top: 1pt solid #e5e7eb !important;
-          background: white !important;
-          font-size: 8pt !important;
-          color: #6b7280 !important;
-        }
-
-        /* Remove shadows and gradients */
-        .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
-          box-shadow: none !important;
-        }
-
-        /* Flatten section backgrounds */
-        .bg-blue-50,
-        .bg-blue-100,
-        .bg-gray-50,
-        .bg-gray-100,
-        .bg-gray-200,
-        .bg-slate-50,
-        .bg-green-50,
-        .bg-green-100,
-        .bg-orange-50 {
-          background-color: #ffffff !important;
-        }
-
-        .section-header {
-          display: none !important;
-        }
-        
-        /* Notes section */
-        .space-y-4 > * + * {
-          margin-top: 12pt !important;
-        }
-
-        /* Hide interactive elements */
-        [contenteditable="true"] {
-          border: none !important;
-          outline: none !important;
-        }
-      }
-    `;
+    style.textContent = generatePrintStyles(templateFormat, primaryColor, secondaryColor, fontSize);
     
     // Remove existing print styles if any
     const existingStyle = document.getElementById('print-styles');
@@ -512,6 +98,24 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
     }
     
     document.head.appendChild(style);
+
+    const waitForLogo = (src?: string | null) =>
+      new Promise<void>((resolve) => {
+        if (!src) {
+          resolve();
+          return;
+        }
+        const img = new Image();
+        const done = () => resolve();
+        img.onload = done;
+        img.onerror = done;
+        img.src = src;
+        if (img.complete) {
+          resolve();
+        }
+      });
+
+    await waitForLogo(logo);
     
     // Small delay to ensure styles are applied
     setTimeout(() => {
@@ -524,12 +128,24 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
       if (styleToRemove) {
         styleToRemove.remove();
       }
+      setDownloadSection('full-report');
     }, 2000);
   };
 
   const handleExportWord = () => {
     exportToWord('full-report-content', `${company.name}_Financial_Statements`);
   };
+
+  const handleDownloadPdf = (section: 'balance-sheet' | 'profit-loss' | 'changes-in-equity' | 'cash-flow' | 'notes') => {
+    setDownloadSection(section);
+    setIsDownloadOpen(false);
+    setTimeout(() => {
+      handlePrint();
+    }, 50);
+  };
+
+  const shouldRenderSection = (section: typeof downloadSection) =>
+    downloadSection === 'full-report' || downloadSection === section;
 
   const ReportHeader: React.FC<{ title: string; subtitle: string }> = ({ title, subtitle }) => (
     <div className="report-statement-header hidden print:block">
@@ -577,13 +193,73 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
           <span className="font-medium">Download Word</span>
         </button>
         <button
-          onClick={handlePrint}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl hover:from-gray-900 hover:to-black transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          onClick={() => setIsDownloadOpen(true)}
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
         >
-          <Printer size={18} />
-          <span className="font-medium">Print / PDF</span>
+          <FileDown size={18} />
+          <span className="font-medium">Download PDF</span>
         </button>
       </div>
+
+      {isDownloadOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6 print:hidden">
+          <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">Download PDF</h3>
+                <p className="text-sm text-slate-500">Choose a section to export</p>
+              </div>
+              <button
+                onClick={() => setIsDownloadOpen(false)}
+                className="rounded-full p-2 hover:bg-slate-100 text-slate-500"
+                type="button"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="px-6 pt-4">
+              <div className="flex items-center justify-between rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-xs text-emerald-700">
+                <span>Template: {templateFormat}</span>
+                <span>Applies to PDF output</span>
+              </div>
+            </div>
+            <div className="px-6 py-5 space-y-3">
+              {([
+                { id: 'full-report', label: 'Full Report', icon: <FileText size={16} />, description: 'Complete financial statements' },
+                { id: 'balance-sheet', label: 'Balance Sheet', icon: <Sheet size={16} />, description: 'Assets, liabilities, and equity' },
+                { id: 'profit-loss', label: 'Profit & Loss', icon: <BarChart3 size={16} />, description: 'Income and expenses statement' },
+                { id: 'changes-in-equity', label: 'Changes in Equity', icon: <Layers size={16} />, description: 'Movements in equity' },
+                { id: 'cash-flow', label: 'Cash Flow', icon: <Waves size={16} />, description: 'Cash flow statement' },
+                { id: 'notes', label: 'Notes', icon: <StickyNote size={16} />, description: 'Notes to accounts' }
+              ] as const).map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => item.id === 'full-report' ? (setDownloadSection('full-report'), setIsDownloadOpen(false), setTimeout(() => handlePrint(), 50)) : handleDownloadPdf(item.id)}
+                  className="w-full flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-left hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
+                  type="button"
+                >
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    {item.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-slate-900">{item.label}</div>
+                    <div className="text-xs text-slate-500">{item.description}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="px-6 pb-5">
+              <button
+                onClick={() => setIsDownloadOpen(false)}
+                className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Validation Dashboard - Only visible in Edit Mode */}
       {viewMode === 'edit' && (
@@ -599,67 +275,61 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
         style={{ fontFamily: fontStyle, fontSize: `${fontSize}px` }}
       >
         {/* Cover Page with Company Details - Combined on first page, only visible in print */}
-        <div className="hidden print:block professional-cover-page">
-          {/* Professional Header Section with Gradient */}
-          <div className="cover-header-section">
-            <div className="cover-header-content">
-              {logo && (
-                <div className="cover-logo-container">
-                  <img
-                    src={logo}
-                    alt={`${company.name} Logo`}
-                    className="cover-logo"
-                  />
+        {downloadSection === 'full-report' && (
+          <div className="hidden print:block cover-page">
+            <div className="cover-hero">
+              <div className="cover-hero-content">
+                <div className="cover-logo-row">
+                  {logo ? (
+                    <img
+                      src={logo}
+                      alt={`${company.name} Logo`}
+                      className="cover-logo"
+                    />
+                  ) : (
+                    <div className="cover-logo-placeholder">Company Logo</div>
+                  )}
                 </div>
-              )}
-              
-              <h1 className="cover-company-name" style={{ color: primaryColor }}>
-                {company.name}
-              </h1>
-              
-              <div className="cover-title-section">
-                <div className="cover-title-line"></div>
-                <p className="cover-title-text">FINANCIAL STATEMENTS</p>
-                <div className="cover-title-line"></div>
+                <h1 className="cover-title">{company.name}</h1>
+                <div className="cover-subtitle">Financial Statements</div>
+                <div className="cover-year">For the year ended {company.yearEnd}</div>
+                <div className="cover-badges">
+                  <span className="cover-badge">CIN: {company.cin}</span>
+                  <span className="cover-badge">PAN: {company.pan}</span>
+                </div>
               </div>
-              
-              <p className="cover-year-text">
-                For the year ended {company.yearEnd}
-              </p>
+              <div className="cover-hero-accent">
+                <div className="cover-card cover-card-primary"></div>
+                <div className="cover-card cover-card-secondary"></div>
+                <div className="cover-card cover-card-tertiary"></div>
+              </div>
             </div>
-          </div>
-          
-          {/* Company Details Section */}
-          <div className="cover-details-section">
-            <div className="cover-details-content">
-              <div className="cover-details-row">
-                <div className="cover-detail-label">Registered Office:</div>
-                <div className="cover-detail-value">{company.address}</div>
-              </div>
-              
+
+            <div className="cover-details">
               <div className="cover-details-grid">
-                <div className="cover-detail-box">
-                  <div className="cover-detail-box-label">CIN</div>
-                  <div className="cover-detail-box-value">{company.cin}</div>
+                <div className="cover-detail-card">
+                  <div className="cover-detail-label">Registered Office</div>
+                  <div className="cover-detail-value">{company.address}</div>
                 </div>
-                <div className="cover-detail-box">
-                  <div className="cover-detail-box-label">PAN</div>
-                  <div className="cover-detail-box-value">{company.pan}</div>
+                <div className="cover-detail-card">
+                  <div className="cover-detail-label">Sector</div>
+                  <div className="cover-detail-value">{company.sector} - {company.specifications}</div>
+                </div>
+                <div className="cover-detail-card">
+                  <div className="cover-detail-label">Financial Year</div>
+                  <div className="cover-detail-value">{company.financialYear}</div>
+                </div>
+                <div className="cover-detail-card">
+                  <div className="cover-detail-label">Prepared For</div>
+                  <div className="cover-detail-value">{company.name}</div>
                 </div>
               </div>
-              
-              <div className="cover-details-row">
-                <div className="cover-detail-label">Sector:</div>
-                <div className="cover-detail-value">{company.sector} - {company.specifications}</div>
-              </div>
-              
-              <div className="cover-details-row">
-                <div className="cover-detail-label">Financial Year:</div>
-                <div className="cover-detail-value">{company.financialYear}</div>
+              <div className="cover-footer-note">
+                This report is generated from the financial statements module.
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Screen Header - Only visible on screen - Completely hidden in print */}
         <section className="text-center space-y-8 bg-gradient-to-r from-gray-50 to-white py-12 px-8 print:hidden no-print" style={{ display: 'none' }}>
@@ -693,15 +363,22 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
         </section>
 
         {/* Balance Sheet Section */}
-        <section className="professional-balance-sheet page-break-after">
+        {shouldRenderSection('balance-sheet') && (
+        <section
+          className={`professional-balance-sheet page-break-after ${
+            downloadSection === 'full-report' ? 'report-first-section' : ''
+          }`}
+        >
           <div className="px-8 print:px-0">
             <ReportHeader title="Standalone Balance Sheet" subtitle={`As at 31 March, ${company.yearEnd}`} />
             <BalanceSheet company={company} modeOverride="report" />
             <ReportSignatures />
           </div>
         </section>
+        )}
 
         {/* Profit & Loss Section */}
+        {shouldRenderSection('profit-loss') && (
         <section className="page-break-after">
           <div className="px-8 print:px-4">
             <ReportHeader title="Statement of Profit & Loss" subtitle={`For the year ended ${company.yearEnd}`} />
@@ -709,8 +386,10 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
             <ReportSignatures />
           </div>
         </section>
+        )}
 
         {/* Changes in Equity Section */}
+        {shouldRenderSection('changes-in-equity') && (
         <section className="page-break-after">
           <div className="px-8 print:px-4">
             <ReportHeader title="Statement of Changes in Equity" subtitle={`For the year ended ${company.yearEnd}`} />
@@ -718,8 +397,10 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
             <ReportSignatures />
           </div>
         </section>
+        )}
 
         {/* Cash Flow Section */}
+        {shouldRenderSection('cash-flow') && (
         <section className="page-break-after">
           <div className="px-8 print:px-4">
             <ReportHeader title="Cash Flow Statement" subtitle={`For the year ended ${company.yearEnd}`} />
@@ -727,14 +408,17 @@ const SeamlessFullReport: React.FC<Props> = ({ company }) => {
             <ReportSignatures />
           </div>
         </section>
+        )}
 
         {/* Notes Section */}
+        {shouldRenderSection('notes') && (
         <section className="page-break-before">
           <ReportHeader title="Notes to Financial Statements" subtitle={`For the year ended ${company.yearEnd}`} />
           <div className="px-8 print:px-4">
             <Notes company={company} modeOverride="report" />
           </div>
         </section>
+        )}
         {/* Footer */}
         <footer className="text-center text-xs text-gray-500 mt-20 print:mt-8 py-8 bg-gray-50 border-t border-gray-100 print:bg-white print:border-t print:border-gray-300 print:py-4">
           <div className="max-w-2xl mx-auto space-y-2 print:space-y-1">

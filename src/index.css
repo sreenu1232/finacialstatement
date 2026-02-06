@@ -324,6 +324,76 @@
     margin-top: 8pt !important;
   }
 
+  .note-format-colorful .note-card {
+    border-color: #93c5fd !important;
+    background: #eff6ff !important;
+  }
+
+  .note-format-colorful .note-header {
+    background: #dbeafe !important;
+    border-bottom-color: #93c5fd !important;
+  }
+
+  .note-format-minimal .note-card {
+    border-color: #e5e7eb !important;
+    background: #ffffff !important;
+  }
+
+  .note-format-minimal .note-header {
+    background: transparent !important;
+    border-bottom-color: #e5e7eb !important;
+  }
+
+  .note-format-professional .note-card,
+  .note-format-corporate .note-card,
+  .note-format-classic .note-card,
+  .note-format-formal .note-card,
+  .note-format-detailed .note-card {
+    border-color: #cbd5f5 !important;
+    background: #f8fafc !important;
+  }
+
+  .note-format-professional .note-header,
+  .note-format-corporate .note-header,
+  .note-format-classic .note-header,
+  .note-format-formal .note-header,
+  .note-format-detailed .note-header {
+    background: #e2e8f0 !important;
+    border-bottom-color: #cbd5f5 !important;
+  }
+
+  .note-format-modern .note-card,
+  .note-format-creative .note-card {
+    border-color: #c7d2fe !important;
+    background: #eef2ff !important;
+  }
+
+  .note-format-modern .note-header,
+  .note-format-creative .note-header {
+    background: #e0e7ff !important;
+    border-bottom-color: #c7d2fe !important;
+  }
+
+  .note-format-elegant .note-card {
+    border-color: #e2e8f0 !important;
+    background: #ffffff !important;
+  }
+
+  .note-format-elegant .note-header {
+    background: transparent !important;
+    border-bottom-color: #e2e8f0 !important;
+  }
+
+  .note-format-compact .note-card {
+    border-color: #e5e7eb !important;
+    background: #ffffff !important;
+  }
+
+  .note-format-compact .note-header {
+    background: #f8fafc !important;
+    border-bottom-color: #e5e7eb !important;
+  }
+
   /* Rounded corners - remove for cleaner print */
   .rounded-xl, .rounded-2xl, .rounded-lg, .rounded-md {
     border-radius: 0 !important;
@@ -354,6 +424,77 @@
     max-width: 100% !important;
     height: auto !important;
   }
+}
+
+/* Notes formatting (screen) */
+.note-format-colorful .note-card {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.note-format-colorful .note-header {
+  background: #dbeafe;
+  border-bottom-color: #93c5fd;
+}
+
+.note-format-minimal .note-card {
+  border-color: #e5e7eb;
+  background: #ffffff;
+}
+
+.note-format-minimal .note-header {
+  background: transparent;
+  border-bottom-color: #e5e7eb;
+}
+
+.note-format-professional .note-card,
+.note-format-corporate .note-card,
+.note-format-classic .note-card,
+.note-format-formal .note-card,
+.note-format-detailed .note-card {
+  border-color: #cbd5f5;
+  background: #f8fafc;
+}
+
+.note-format-professional .note-header,
+.note-format-corporate .note-header,
+.note-format-classic .note-header,
+.note-format-formal .note-header,
+.note-format-detailed .note-header {
+  background: #e2e8f0;
+  border-bottom-color: #cbd5f5;
+}
+
+.note-format-modern .note-card,
+.note-format-creative .note-card {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
+.note-format-modern .note-header,
+.note-format-creative .note-header {
+  background: #e0e7ff;
+  border-bottom-color: #c7d2fe;
+}
+
+.note-format-elegant .note-card {
+  border-color: #e2e8f0;
+  background: #ffffff;
+}
+
+.note-format-elegant .note-header {
+  background: transparent;
+  border-bottom-color: #e2e8f0;
+}
+
+.note-format-compact .note-card {
+  border-color: #e5e7eb;
+  background: #ffffff;
+}
+
+.note-format-compact .note-header {
+  background: #f8fafc;
+  border-bottom-color: #e5e7eb;
 }
 
 /* Screen styles for page breaks */

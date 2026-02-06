@@ -10,9 +10,10 @@ import {
   ChevronRight,
   Upload,
   Plus,
-  Trash2
+  Trash2,
+  Layout
 } from 'lucide-react';
-import { Company, TemplateSettings, FormattingSettings, SignatureBlock, PaperSize, FontStyle, UnitOfMeasurement, TableDesign, TableAccent, TableDensity } from '../types';
+import { Company, TemplateSettings, FormattingSettings, SignatureBlock, PaperSize, FontStyle, UnitOfMeasurement, TableDesign, TableAccent, TableDensity, PDFTemplateFormat, NoteFormat } from '../types';
 
 interface MastersSidebarProps {
   company: Company;
@@ -21,6 +22,7 @@ interface MastersSidebarProps {
 
 const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpdate }) => {
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
+    templateFormat: false,
     templates: false,
     notes: false,
     signatures: false,
@@ -78,15 +80,62 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
     updateFormattingSettings({ signatureBlocks: updatedSignatures });
   };
 
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+  const resizeLogo = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const src = reader.result;
+        if (typeof src !== 'string') {
+          reject(new Error('Invalid image data'));
+          return;
+        }
+        const img = new Image();
+        img.onload = () => {
+          const maxWidth = 600;
+          const maxHeight = 240;
+          const scale = Math.min(maxWidth / img.width, maxHeight / img.height, 1);
+          const width = Math.round(img.width * scale);
+          const height = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Canvas not supported'));
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/png', 0.92));
+        };
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = src;
+      };
+      reader.onerror = () => reject(new Error('File read failed'));
+      reader.readAsDataURL(file);
+    });
+
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        updateTemplateSettings({ logo: e.target?.result as string });
-      };
-      reader.readAsDataURL(file);
+    if (!file) {
+      return;
     }
+    if (!file.type.startsWith('image/')) {
+      event.target.value = '';
+      return;
+    }
+    resizeLogo(file)
+      .then((dataUrl) => {
+        setLogoPreview(dataUrl);
+        updateTemplateSettings({ logo: dataUrl });
+      })
+      .catch(() => {
+        const objectUrl = URL.createObjectURL(file);
+        setLogoPreview(objectUrl);
+        updateTemplateSettings({ logo: objectUrl });
+      });
+    event.target.value = '';
   };
 
   return (
@@ -101,7 +150,139 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
       </div>
 
       <div className="p-4 space-y-3">
-        {/* 1. Choose from different templates */}
+        {/* 1. Template Format for PDF Download */}
+        <div className="space-y-2">
+          <button
+            onClick={() => toggleSection('templateFormat')}
+            className="w-full flex items-center justify-between p-3.5 text-left bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 border border-blue-200/50 hover:border-blue-300 shadow-sm hover:shadow"
+          >
+            <div className="flex items-center gap-2.5">
+              <Layout size={16} className="text-blue-600" />
+              <span className="font-semibold text-gray-800 tracking-wide">Template Format</span>
+            </div>
+            {expandedSections.templateFormat ? <ChevronDown size={16} className="text-gray-600" /> : <ChevronRight size={16} className="text-gray-600" />}
+          </button>
+
+          {expandedSections.templateFormat && (
+            <div className="ml-4 space-y-3 p-4 bg-gradient-to-br from-blue-50/80 to-white rounded-xl border border-blue-200/50 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-gray-700 tracking-wide">Select PDF Template</p>
+                  <p className="text-xs text-gray-500">Applies to PDF downloads and print output</p>
+                </div>
+                <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                  {company.settings.template.templateFormat}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {([
+                  { value: 'classic', label: 'Classic', description: 'Traditional format with standard layout', accent: 'bg-slate-200', header: 'bg-slate-300', grid: 'bg-slate-100' },
+                  { value: 'modern', label: 'Modern', description: 'Contemporary design with clean lines', accent: 'bg-sky-200', header: 'bg-sky-300', grid: 'bg-sky-50' },
+                  { value: 'professional', label: 'Professional', description: 'Corporate standard format', accent: 'bg-blue-200', header: 'bg-blue-300', grid: 'bg-blue-50' },
+                  { value: 'minimal', label: 'Minimal', description: 'Clean and simple layout', accent: 'bg-gray-200', header: 'bg-gray-200', grid: 'bg-gray-50' },
+                  { value: 'corporate', label: 'Corporate', description: 'Business-focused design', accent: 'bg-indigo-200', header: 'bg-indigo-300', grid: 'bg-indigo-50' },
+                  { value: 'elegant', label: 'Elegant', description: 'Sophisticated and refined', accent: 'bg-amber-200', header: 'bg-amber-300', grid: 'bg-amber-50' },
+                  { value: 'formal', label: 'Formal', description: 'Official document style', accent: 'bg-neutral-200', header: 'bg-neutral-300', grid: 'bg-neutral-50' },
+                  { value: 'creative', label: 'Creative', description: 'Unique and artistic layout', accent: 'bg-fuchsia-200', header: 'bg-fuchsia-300', grid: 'bg-fuchsia-50' },
+                  { value: 'compact', label: 'Compact', description: 'Space-efficient format', accent: 'bg-emerald-200', header: 'bg-emerald-300', grid: 'bg-emerald-50' },
+                  { value: 'detailed', label: 'Detailed', description: 'Comprehensive with extra information', accent: 'bg-rose-200', header: 'bg-rose-300', grid: 'bg-rose-50' }
+                ] as { value: PDFTemplateFormat; label: string; description: string; accent: string; header: string; grid: string }[]).map((template) => {
+                  const isSelected = company.settings.template.templateFormat === template.value;
+                  return (
+                    <button
+                      key={template.value}
+                      type="button"
+                      onClick={() => updateTemplateSettings({ templateFormat: template.value as PDFTemplateFormat })}
+                      className={`relative flex flex-col gap-2 rounded-xl border-2 p-3 text-left transition-all duration-300 ${
+                        isSelected
+                          ? 'border-blue-500 bg-blue-50 shadow-md'
+                          : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/50 shadow-sm hover:shadow'
+                      }`}
+                    >
+                      <div className={`h-20 rounded-lg border border-slate-200 p-2 ${template.grid}`}>
+                        <div className={`h-2 rounded ${template.header} ${template.value === 'detailed' ? 'w-3/4' : 'w-2/3'}`}></div>
+                        {template.value === 'creative' && (
+                          <div className="mt-2 grid grid-cols-4 gap-1">
+                            <div className={`h-4 rounded ${template.accent}`}></div>
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                            <div className={`h-4 rounded ${template.accent}`}></div>
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'compact' && (
+                          <div className="mt-2 space-y-1">
+                            <div className="h-3 rounded bg-white border border-slate-200"></div>
+                            <div className="h-3 rounded bg-white border border-slate-200"></div>
+                            <div className="h-3 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'modern' && (
+                          <div className="mt-2 grid grid-cols-3 gap-1">
+                            <div className="h-5 rounded bg-white border border-slate-200"></div>
+                            <div className={`h-5 rounded ${template.accent}`}></div>
+                            <div className="h-5 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'elegant' && (
+                          <div className="mt-2">
+                            <div className={`h-5 rounded ${template.accent}`}></div>
+                            <div className="mt-1 h-5 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'formal' && (
+                          <div className="mt-2 grid grid-cols-2 gap-1">
+                            <div className="h-5 rounded bg-white border border-slate-200"></div>
+                            <div className="h-5 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'classic' && (
+                          <div className="mt-2 grid grid-cols-3 gap-1">
+                            <div className={`h-4 rounded ${template.accent}`}></div>
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'professional' && (
+                          <div className="mt-2 grid grid-cols-3 gap-1">
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                            <div className={`h-4 rounded ${template.accent}`}></div>
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                        {template.value === 'corporate' && (
+                          <div className="mt-2">
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                            <div className={`mt-1 h-4 rounded ${template.accent}`}></div>
+                          </div>
+                        )}
+                        {template.value === 'minimal' && (
+                          <div className="mt-2 h-7 rounded bg-white border border-slate-200"></div>
+                        )}
+                        {template.value === 'detailed' && (
+                          <div className="mt-2 grid grid-cols-3 gap-1">
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                            <div className="h-4 rounded bg-white border border-slate-200"></div>
+                            <div className={`h-4 rounded ${template.accent}`}></div>
+                            <div className="col-span-3 mt-1 h-4 rounded bg-white border border-slate-200"></div>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-gray-800">{template.label}</div>
+                        <div className="text-[11px] text-gray-500">{template.description}</div>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 h-2 w-2 rounded-full bg-blue-600 shadow-sm"></div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 2. Choose from different templates */}
         <div className="space-y-2">
           <button
             onClick={() => toggleSection('templates')}
@@ -120,10 +301,10 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">Company Logo</label>
                 <div className="space-y-3">
-                  {company.settings.template.logo && (
+                  {(company.settings.template.logo || logoPreview) && (
                     <div className="flex flex-col items-center space-y-2">
                       <img
-                        src={company.settings.template.logo}
+                        src={company.settings.template.logo ?? logoPreview ?? undefined}
                         alt="Company Logo"
                         className="w-20 h-20 object-contain border-2 border-gray-200 rounded-xl bg-gray-50 shadow-sm"
                       />
@@ -234,8 +415,52 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
           </button>
 
           {expandedSections.notes && (
-            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm">
-              <p className="text-sm text-gray-600 mb-3">Customize table formats for:</p>
+            <div className="ml-4 p-4 bg-gradient-to-br from-gray-50/80 to-white rounded-xl border border-gray-200/50 shadow-sm space-y-4">
+              <div>
+                <p className="text-sm font-semibold text-gray-700 mb-3 tracking-wide">Notes Table Style (PDF & Screen)</p>
+                <div className="grid grid-cols-1 gap-2.5">
+                  {([
+                    { value: 'classic', label: 'Classic', description: 'Traditional format with standard layout' },
+                    { value: 'modern', label: 'Modern', description: 'Contemporary design with clean lines' },
+                    { value: 'professional', label: 'Professional', description: 'Corporate standard format' },
+                    { value: 'minimal', label: 'Minimal', description: 'Clean and simple layout' },
+                    { value: 'corporate', label: 'Corporate', description: 'Business-focused design' },
+                    { value: 'elegant', label: 'Elegant', description: 'Sophisticated and refined' },
+                    { value: 'formal', label: 'Formal', description: 'Official document style' },
+                    { value: 'creative', label: 'Creative', description: 'Unique and artistic layout' },
+                    { value: 'compact', label: 'Compact', description: 'Space-efficient format' },
+                    { value: 'detailed', label: 'Detailed', description: 'Comprehensive with extra information' }
+                  ] as { value: NoteFormat; label: string; description: string }[]).map((format) => (
+                    <label
+                      key={format.value}
+                      className={`relative flex items-start p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                        company.settings.formatting.noteFormat === format.value
+                          ? 'border-blue-500 bg-blue-50 shadow-md'
+                          : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/50 shadow-sm hover:shadow'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="noteFormat"
+                        value={format.value}
+                        checked={company.settings.formatting.noteFormat === format.value}
+                        onChange={(e) => updateFormattingSettings({ noteFormat: e.target.value as NoteFormat })}
+                        className="mt-0.5 h-4 w-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+                      />
+                      <div className="ml-3">
+                        <div className="font-semibold text-gray-800 text-sm tracking-wide">{format.label}</div>
+                        <div className="text-xs text-gray-600 mt-0.5">{format.description}</div>
+                      </div>
+                      {company.settings.formatting.noteFormat === format.value && (
+                        <div className="absolute top-2 right-2 w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+                      )}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-600 mb-3">Customize table formats for:</p>
               <div className="space-y-2">
                 <label className="flex items-center gap-2">
                   <input type="checkbox" defaultChecked className="rounded" />
@@ -257,6 +482,7 @@ const MastersSidebar: React.FC<MastersSidebarProps> = ({ company, onSettingsUpda
                   <input type="checkbox" defaultChecked className="rounded" />
                   <span className="text-sm">Notes to Accounts Tables</span>
                 </label>
+              </div>
               </div>
             </div>
           )}

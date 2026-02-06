@@ -11,8 +11,21 @@ export type UnitOfMeasurement = 'full-number' | 'thousands' | 'ten-thousands' | 
 export type TableDesign = 'classic' | 'modern' | 'minimal' | 'striped' | 'elegant' | 'material' | 'glass' | 'contrast';
 export type TableAccent = 'blue' | 'emerald' | 'violet' | 'amber' | 'slate' | 'rose';
 export type TableDensity = 'comfortable' | 'compact' | 'spacious';
+export type NoteFormat =
+  | 'classic'
+  | 'modern'
+  | 'professional'
+  | 'minimal'
+  | 'corporate'
+  | 'elegant'
+  | 'formal'
+  | 'creative'
+  | 'compact'
+  | 'detailed';
 
 export type FontStyle = 'arial' | 'times-new-roman' | 'calibri' | 'helvetica' | 'georgia';
+
+export type PDFTemplateFormat = 'classic' | 'modern' | 'professional' | 'minimal' | 'corporate' | 'elegant' | 'formal' | 'creative' | 'compact' | 'detailed';
 
 export interface SignatureBlock {
   id: string;
@@ -23,6 +36,7 @@ export interface SignatureBlock {
 }
 
 export interface TemplateSettings {
+  templateFormat: PDFTemplateFormat;
   logo?: string;
   primaryColor: string;
   secondaryColor: string;
@@ -39,6 +53,7 @@ export interface FormattingSettings {
   tableDesign: TableDesign;
   tableAccent: TableAccent;
   tableDensity: TableDensity;
+  noteFormat: NoteFormat;
   showSignatureBlocks: boolean;
   signatureBlocks: SignatureBlock[];
   showDSCSign: boolean;
